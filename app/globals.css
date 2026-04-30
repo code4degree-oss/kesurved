@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-light: #FFFFFF;
-  --color-brand-dark: #111111;
-  --color-brand-blue: #F2F5F5;
-  --color-brand-blue-hover: #E2E8E8;
-  --color-brand-accent: #005F56;
-  --color-brand-accent-hover: #004A43;
+  --color-brand-light: #FBFAF3;
+  --color-brand-dark: #122131;
+  --color-brand-blue: #4086D2;
+  --color-brand-blue-hover: #6391F5;
+  --color-brand-accent: #8CBDF6;
+  --color-brand-accent-hover: #BBD0F1;
   --font-serif: var(--font-playfair);
   --font-sans: var(--font-inter);
 }
