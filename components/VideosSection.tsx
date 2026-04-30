@@ -35,8 +35,8 @@ const IG_EMBEDS = [
 export function VideosSection() {
   // Ensure the Instagram script processes the blockquotes after it mounts
   useEffect(() => {
-    if (window.instgrm) {
-      window.instgrm.Embeds.process();
+    if ((window as any).instgrm) {
+      (window as any).instgrm.Embeds.process();
     }
   }, []);
 
