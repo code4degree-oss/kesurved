@@ -57,7 +57,7 @@ export function VideosSection() {
             {/* Actual Embedded Instagram Reels */}
             {IG_EMBEDS.map((htmlString, index) => (
               <motion.div
-                key={\`ig-\${index}\`}
+                key={`ig-${index}`}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -93,7 +93,7 @@ export function VideosSection() {
                   width="100%" 
                   height="100%" 
                   src={video.url} 
-                  title={\`YouTube video player \${video.id}\`} 
+                  title={`YouTube video player ${video.id}`} 
                   frameBorder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                   allowFullScreen
