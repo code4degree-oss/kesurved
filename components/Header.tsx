@@ -63,7 +63,6 @@ export function Header() {
           <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-[15px] text-black">
             <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Hair Care</a>
             <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Skin Care</a>
-            <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Body Care</a>
             <a href="#about" className="hover:text-brand-accent transition-colors px-2 py-1">Our Story</a>
             <a href="#contact" className="hover:text-brand-accent transition-colors px-2 py-1">Contact</a>
           </nav>

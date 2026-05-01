@@ -13,7 +13,6 @@ export interface Product {
 export const CATEGORIES = [
   { id: 'hair-care', name: 'Hair Care', icon: '💆‍♀️', image: 'https://picsum.photos/seed/cathair/300/300' },
   { id: 'skin-care', name: 'Skin Care', icon: '✨', image: 'https://picsum.photos/seed/catskin/300/300' },
-  { id: 'body-care', name: 'Body Care', icon: '🧴', image: 'https://picsum.photos/seed/catbody/300/300' },
   { id: 'combos', name: 'Combos', icon: '🎁', image: 'https://picsum.photos/seed/catcombo/300/300' },
 ];
 
