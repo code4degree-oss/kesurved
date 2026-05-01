@@ -19,10 +19,10 @@ git pull origin main
 echo "📦 Installing dependencies..."
 npm install
 
-# 4. Set up the Database (Backend)
-echo "🗄️ Generating Prisma Client and Syncing Database..."
-npx prisma generate
-npx prisma db push --accept-data-loss
+# 4. (Skipping Database setup for now)
+# echo "🗄️ Generating Prisma Client and Syncing Database..."
+# npx prisma generate
+# npx prisma db push --accept-data-loss
 
 # 5. Build the Next.js production bundle
 echo "🏗️ Building the Next.js application..."
