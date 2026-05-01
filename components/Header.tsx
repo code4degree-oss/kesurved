@@ -40,7 +40,9 @@ export function Header() {
         style={{ backgroundColor, borderColor }}
         className="fixed top-0 left-0 right-0 z-40 border-b backdrop-blur-md transition-colors duration-300"
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
+        <div className="w-full px-4 md:px-8 lg:px-12 h-20 flex items-center justify-between">
+          
+          {/* Mobile Menu & Logo (Left) */}
           <div className="flex items-center gap-4">
             <button 
               className="md:hidden p-2 -ml-2 text-brand-dark hover:text-brand-blue"
@@ -49,26 +51,28 @@ export function Header() {
             >
               <Menu size={24} />
             </button>
-            
-            <nav className="hidden md:flex gap-8 text-sm font-medium text-brand-dark/80">
-              <a href="#shop" className="hover:text-brand-blue transition-colors px-2 py-1">Hair Care</a>
-              <a href="#shop" className="hover:text-brand-blue transition-colors px-2 py-1">Skin Care</a>
-              <a href="#about" className="hover:text-brand-blue transition-colors px-2 py-1">Our Story</a>
-              <a href="#contact" className="hover:text-brand-blue transition-colors px-2 py-1">Contact</a>
-            </nav>
+            <a href="#" className="flex items-center gap-2 group">
+              <Leaf className="text-brand-dark group-hover:scale-110 transition-transform" />
+              <span className="font-serif text-2xl font-semibold tracking-tight text-brand-dark">
+                Kesurved
+              </span>
+            </a>
           </div>
 
-          <a href="#" className="flex items-center gap-2 group absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
-            <Leaf className="text-brand-blue group-hover:scale-110 transition-transform" />
-            <span className="font-serif text-2xl font-semibold tracking-tight text-brand-blue">
-              Kesurved
-            </span>
-          </a>
+          {/* Desktop Navigation (Center) */}
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-[15px] text-brand-dark">
+            <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Hair Care</a>
+            <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Skin Care</a>
+            <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Body Care</a>
+            <a href="#about" className="hover:text-brand-accent transition-colors px-2 py-1">Our Story</a>
+            <a href="#contact" className="hover:text-brand-accent transition-colors px-2 py-1">Contact</a>
+          </nav>
 
-          <div className="flex items-center justify-end w-[80px] md:w-[132px]">
+          {/* Icons (Right) */}
+          <div className="flex items-center justify-end">
             <button
               onClick={openCart}
-              className="relative p-2 -mr-2 md:-mr-0 text-brand-dark hover:text-brand-blue transition-colors"
+              className="relative p-2 text-brand-dark hover:text-brand-accent transition-colors"
               aria-label="Open Cart"
             >
               <ShoppingBag size={24} />
@@ -76,13 +80,14 @@ export function Header() {
                 <motion.span 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-0 right-0 w-5 h-5 bg-brand-accent text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-brand-light"
+                  className="absolute top-0 right-0 w-5 h-5 bg-brand-accent text-brand-dark text-xs font-bold rounded-full flex items-center justify-center border-2 border-brand-light"
                 >
                   {cartCount}
                 </motion.span>
               )}
             </button>
           </div>
+
         </div>
       </motion.header>
 

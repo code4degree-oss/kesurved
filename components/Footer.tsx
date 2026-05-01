@@ -5,7 +5,7 @@ import { Leaf, Instagram, Facebook, Youtube } from 'lucide-react';
 export function Footer() {
   return (
     <footer id="contact" className="bg-brand-dark text-brand-light pt-20 pb-10">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-1">
             <a href="#" className="flex items-center gap-2 group mb-6 text-white">

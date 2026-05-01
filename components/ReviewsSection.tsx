@@ -30,7 +30,7 @@ const REVIEWS = [
 export function ReviewsSection() {
   return (
     <section className="py-24 bg-brand-accent/5">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full px-4 md:px-8 lg:px-12">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-4xl font-serif font-bold text-brand-blue mb-4">Loved by Thousands</h2>
           <p className="text-brand-dark/70 text-lg">Real results from our community of natural hair care enthusiasts.</p>
