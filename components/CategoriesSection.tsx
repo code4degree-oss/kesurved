@@ -7,10 +7,10 @@ export function CategoriesSection() {
   return (
     <section className="py-10 md:py-14 bg-white">
       <div className="px-4 md:px-16 lg:px-24">
-        <h2 className="text-center font-serif text-2xl md:text-3xl font-bold text-brand-dark mb-2">
+        <h2 className="text-center font-serif text-2xl md:text-3xl font-bold text-black mb-2">
           Shop By Category
         </h2>
-        <p className="text-center text-brand-dark/50 text-sm mb-8">
+        <p className="text-center text-black text-sm mb-8">
           Find exactly what your hair &amp; skin needs
         </p>
 

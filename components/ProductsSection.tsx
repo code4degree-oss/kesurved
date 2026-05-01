@@ -86,8 +86,8 @@ function ScrollableRow({ title, subtitle, products }: { title: string; subtitle?
       {/* Section Header */}
       <div className="flex items-end justify-between mb-6 px-4 md:px-16 lg:px-24">
         <div>
-          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-brand-dark">{title}</h2>
-          {subtitle && <p className="text-brand-dark/50 text-xs sm:text-sm mt-1">{subtitle}</p>}
+          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-black">{title}</h2>
+          {subtitle && <p className="text-black text-xs sm:text-sm mt-1">{subtitle}</p>}
         </div>
         <div className="hidden sm:flex items-center gap-2">
           <button

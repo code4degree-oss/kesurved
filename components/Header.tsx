@@ -52,15 +52,15 @@ export function Header() {
               <Menu size={24} />
             </button>
             <a href="/" className="flex items-center gap-2 group">
-              <Leaf className="text-brand-dark group-hover:scale-110 transition-transform" />
-              <span className="font-serif text-2xl font-semibold tracking-tight text-brand-dark">
+              <Leaf className="text-black group-hover:scale-110 transition-transform" />
+              <span className="font-serif text-2xl font-semibold tracking-tight text-black">
                 Kesurved
               </span>
             </a>
           </div>
 
           {/* Desktop Navigation (Center) */}
-          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-[15px] text-brand-dark">
+          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-[15px] text-black">
             <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Hair Care</a>
             <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Skin Care</a>
             <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Body Care</a>
@@ -72,7 +72,7 @@ export function Header() {
           <div className="flex items-center justify-end">
             <button
               onClick={openCart}
-              className="relative p-2 text-brand-dark hover:text-brand-accent transition-colors"
+              className="relative p-2 text-black hover:text-brand-accent transition-colors"
               aria-label="Open Cart"
             >
               <ShoppingBag size={24} />
