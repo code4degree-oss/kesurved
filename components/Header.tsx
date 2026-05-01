@@ -51,7 +51,7 @@ export function Header() {
             >
               <Menu size={24} />
             </button>
-            <a href="#" className="flex items-center gap-2 group">
+            <a href="/" className="flex items-center gap-2 group">
               <Leaf className="text-brand-dark group-hover:scale-110 transition-transform" />
               <span className="font-serif text-2xl font-semibold tracking-tight text-brand-dark">
                 Kesurved

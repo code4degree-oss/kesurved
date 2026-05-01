@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Admin Users ───────────────────────────────────────────
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+// ─── Categories ────────────────────────────────────────────
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  products Product[]
+}
+
+// ─── Products ──────────────────────────────────────────────
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float    // MRP
+  salePrice   Float    // Selling price
+  image       String   // /uploads/products/xxx.jpg
+  weightGrams Int      // Weight in grams for India Post
+  stock       Int      @default(0)
+  position    Int      @default(0)  // For drag-to-reorder in admin
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems    OrderItem[]
+  comboProducts ComboProduct[]
+  reviews       Review[]
+}
+
+// ─── Combos ────────────────────────────────────────────────
+model Combo {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  comboPrice  Float
+  image       String?
+  createdAt   DateTime       @default(now())
+  products    ComboProduct[]
+}
+
+model ComboProduct {
+  id        String  @id @default(cuid())
+  comboId   String
+  combo     Combo   @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+
+  @@unique([comboId, productId])
+}
+
+// ─── Customers (Phone-based login) ─────────────────────────
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @unique  // WhatsApp number, used for login
+  addressLine1 String?
+  addressLine2 String?
+  addressLine3 String?
+  city         String?
+  state        String?
+  pincode      String?
+  createdAt    DateTime @default(now())
+  orders       Order[]
+  reviews      Review[]
+}
+
+// ─── Orders ────────────────────────────────────────────────
+model Order {
+  id                String      @id @default(cuid())
+  customerId        String
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  status            OrderStatus @default(NEW)
+  total             Float       // Total in ₹
+  deliveryCharge    Float       @default(0)  // Maharashtra vs outside
+  totalWeightGrams  Int         // Sum of all item weights
+  
+  // Shipping address (snapshot at order time)
+  shippingName      String
+  shippingPhone     String
+  shippingAddress1  String
+  shippingAddress2  String?
+  shippingCity      String
+  shippingState     String
+  shippingPincode   String
+
+  // Razorpay (for later integration)
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  paymentMethod     String      @default("COD")  // COD or ONLINE
+
+  // Export & timestamps
+  exportedAt        DateTime?   // Set when included in India Post Excel
+  cancelledAt       DateTime?   // When customer cancelled
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  items             OrderItem[]
+}
+
+enum OrderStatus {
+  NEW
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id              String  @id @default(cuid())
+  orderId         String
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product @relation(fields: [productId], references: [id])
+  quantity        Int
+  priceAtPurchase Float
+  weightGrams     Int
+
+  @@unique([orderId, productId])
+}
+
+// ─── Reviews (Admin-moderated) ─────────────────────────────
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  name       String   // Reviewer display name
+  phone      String   // Reviewer phone
+  rating     Int      // 1-5
+  text       String
+  approved   Boolean  @default(false)  // Only approved reviews show on site
+  createdAt  DateTime @default(now())
+}
+
+// ─── Leads (Phone popup collection) ────────────────────────
+model Lead {
+  id        String   @id @default(cuid())
+  name      String?
+  phone     String   @unique
+  createdAt DateTime @default(now())
+}
+
+// ─── Delivery Zones ────────────────────────────────────────
+model DeliveryZone {
+  id     String @id @default(cuid())
+  zone   String @unique  // "maharashtra" or "outside_maharashtra"
+  charge Float            // Delivery charge in ₹
+}
