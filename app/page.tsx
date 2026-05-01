@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { ProductsSection } from "@/components/ProductsSection";
-import { BannerSection, TrustBanner, SecondBanner } from "@/components/BannerSection";
+import { BannerSection, SecondBanner } from "@/components/BannerSection";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { Footer } from "@/components/Footer";
 import fs from 'fs';
@@ -41,7 +41,6 @@ export default function Home() {
       <div className="bg-brand-light">
         <Header />
         <Hero banners={banners} />
-        <TrustBanner />
         <CategoriesSection />
         <ProductsSection banners={banners} />
       </div>
