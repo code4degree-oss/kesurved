@@ -23,5 +23,20 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  .section-gutter {
+    margin-left: 1rem;
+    margin-right: 0;
+  }
+  @media (min-width: 768px) {
+    .section-gutter {
+      margin-left: 4rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-gutter {
+      margin-left: 6rem;
+    }
+  }
 }
 

@@ -114,8 +114,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   </a>
                 </div>
 
-                <div className="text-3xl font-serif font-light text-brand-dark mb-6">
-                  ${product.price.toFixed(2)}
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-3xl font-bold text-brand-dark">₹{product.salePrice || product.price}</span>
+                  {product.salePrice && (
+                    <span className="text-lg text-brand-dark/40 line-through">₹{product.price}</span>
+                  )}
                 </div>
 
                 <p className="text-brand-dark/80 text-lg leading-relaxed mb-8">
@@ -124,10 +127,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
                 <button
                   onClick={() => addToCart(product)}
-                  className="w-full sm:w-auto bg-brand-blue text-white px-10 py-4 rounded-full font-medium flex items-center justify-center gap-3 hover:bg-brand-blue-hover transition-colors shadow-lg shadow-brand-blue/20 text-lg"
+                  className="w-full sm:w-auto bg-brand-accent text-brand-dark px-10 py-4 rounded-sm font-bold flex items-center justify-center gap-3 hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 text-lg tracking-wide"
                 >
                   <ShoppingBag size={22} />
-                  Add to Basket
+                  Add to Cart
                 </button>
               </div>
 
@@ -139,7 +142,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   </div>
                   <div>
                     <h4 className="font-semibold text-brand-dark text-sm mb-1">Free Shipping</h4>
-                    <p className="text-xs text-brand-dark/60">On orders over $50</p>
+                    <p className="text-xs text-brand-dark/60">On orders over ₹999</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

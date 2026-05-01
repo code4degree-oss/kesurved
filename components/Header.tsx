@@ -13,13 +13,13 @@ export function Header() {
   const backgroundColor = useTransform(
     scrollY,
     [0, 50],
-    ['rgba(253, 251, 247, 0)', 'rgba(253, 251, 247, 0.95)']
+    ['rgba(255, 255, 255, 0.95)', 'rgba(255, 255, 255, 1)']
   );
   
   const borderColor = useTransform(
     scrollY,
     [0, 50],
-    ['rgba(46, 77, 62, 0)', 'rgba(46, 77, 62, 0.1)']
+    ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.08)']
   );
 
   // Prevent background scrolling when mobile menu is open

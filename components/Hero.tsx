@@ -1,115 +1,124 @@
 'use client';
 
-import { motion } from 'motion/react';
-import Image from 'next/image';
-import { useCart } from './CartContext';
-import { ShoppingBag } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const HERO_SLIDES = [
+  {
+    title: 'Ancient Wisdom,\nModern Results',
+    subtitle: 'Ayurvedic hair & skin care crafted from 100% organic herbs',
+    cta: 'Shop Bestsellers',
+    href: '#bestsellers',
+    image: 'https://picsum.photos/seed/hero1/1400/600',
+    mobileImage: 'https://picsum.photos/seed/hero1m/800/1000',
+  },
+  {
+    title: 'Hair Fall?\nWe Got You.',
+    subtitle: 'Our Brahmi & Amla Growth Elixir is India\'s #1 herbal hair oil',
+    cta: 'Shop Hair Care',
+    href: '#shop',
+    image: 'https://picsum.photos/seed/hero2/1400/600',
+    mobileImage: 'https://picsum.photos/seed/hero2m/800/1000',
+  },
+  {
+    title: 'Flat 25% Off\nOn All Combos',
+    subtitle: 'Limited time offer — bundle your favourites and save big',
+    cta: 'View Combos',
+    href: '#shop',
+    image: 'https://picsum.photos/seed/hero3/1400/600',
+    mobileImage: 'https://picsum.photos/seed/hero3m/800/1000',
+  },
+];
 
 export function Hero() {
-  const { addToCart } = useCart();
+  const [current, setCurrent] = useState(0);
 
-  const heroProduct = {
-    id: 'hero-product-1',
-    name: 'Blue Lotus & Indigo Growth Serum',
-    price: 65.00,
-    image: 'https://picsum.photos/seed/bluelotus/600/800',
-    description: 'Our signature cooling scalp elixir formulated to activate roots and nourish deeply.',
-  };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const goTo = (index: number) => setCurrent(index);
+  const prev = () => setCurrent((current - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  const next = () => setCurrent((current + 1) % HERO_SLIDES.length);
+
+  const slide = HERO_SLIDES[current];
 
   return (
-    <section className="relative overflow-hidden w-full bg-brand-light text-brand-dark min-h-[85vh] flex items-center pt-20 md:pt-0">
-      {/* Background Image using Next/Image with soft opacity */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://picsum.photos/seed/herbsoil/1920/1080"
-          alt="Natural herbs background"
-          fill
-          className="object-cover opacity-10 select-none pointer-events-none"
-          priority
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-light via-brand-light/90 to-transparent" />
-      </div>
+    <section className="relative w-full overflow-hidden pt-16 md:pt-20">
+      {/* Desktop Hero */}
+      <div className="relative h-[480px] md:h-[540px] lg:h-[600px]">
+        {HERO_SLIDES.map((s, i) => (
+          <div
+            key={i}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+          >
+            {/* Background Image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.image}
+              alt={s.title}
+              className="hidden md:block w-full h-full object-cover"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.mobileImage}
+              alt={s.title}
+              className="block md:hidden w-full h-full object-cover"
+            />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/40 to-transparent" />
 
-      <div className="relative z-10 w-full px-4 md:px-8 lg:px-12 grid md:grid-cols-2 gap-12 items-center py-12 md:py-0">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-2xl text-center md:text-left mx-auto md:mx-0"
-        >
-          <span className="text-brand-blue font-bold tracking-widest uppercase text-xs md:text-sm mb-3 md:mb-4 block">
-            Award-Winning Formula
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5rem] font-serif font-bold leading-tight mb-4 md:mb-6 text-brand-dark">
-            The <span className="italic text-brand-blue">Blue Lotus</span> Elixir
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-brand-dark/80 mb-8 md:mb-10 leading-relaxed font-medium px-4 md:px-0">
-            Meet our best-selling scalp clarifying serum. 
-            Infused with Indigo, Peppermint, and rare Blue Lotus extracts to instantly soothe irritation and promote dense, lustrous growth.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-            <button 
-              onClick={() => addToCart(heroProduct)}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-brand-accent text-brand-dark font-bold rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 tracking-wide"
-            >
-              <ShoppingBag size={20} />
-              Add to Basket — $65
-            </button>
-            <a href="#shop" className="w-full sm:w-auto text-center px-8 py-4 border-2 border-brand-dark text-brand-dark font-bold rounded-sm hover:bg-brand-dark hover:text-brand-light transition-colors tracking-wide">
-              Explore Collection
-            </a>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="relative hidden md:flex items-center justify-center"
-        >
-          {/* Featured Product Card */}
-          <div className="relative aspect-[4/5] w-full max-w-md bg-white rounded-lg overflow-hidden shadow-2xl p-6 group flex flex-col justify-end">
-            <div className="absolute inset-0">
-              <Image
-                src={heroProduct.image}
-                alt={heroProduct.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                priority
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-brand-dark/80" />
-            </div>
-            
-            <div className="relative z-10 text-white pb-2 px-2">
-              <div className="flex justify-between items-end mb-2">
-                <div>
-                  <div className="text-brand-accent uppercase tracking-widest text-xs font-bold mb-2 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
-                    Best Seller
-                  </div>
-                  <h3 className="text-3xl font-serif font-bold leading-tight drop-shadow-md">{heroProduct.name}</h3>
-                </div>
+            {/* Content */}
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full px-6 md:px-16 lg:px-24 max-w-3xl">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight whitespace-pre-line mb-4 drop-shadow-lg">
+                  {s.title}
+                </h1>
+                <p className="text-white/80 text-sm sm:text-base md:text-lg mb-6 max-w-xl">
+                  {s.subtitle}
+                </p>
+                <a
+                  href={s.href}
+                  className="inline-flex items-center gap-2 bg-brand-accent text-brand-dark font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 tracking-wide text-sm md:text-base"
+                >
+                  {s.cta}
+                </a>
               </div>
-              <p className="text-white/90 text-sm mt-2 mb-4 drop-shadow font-medium">
-                {heroProduct.description}
-              </p>
             </div>
           </div>
-          
-          {/* Decorative floating elements */}
-          <motion.div 
-            animate={{ y: [0, -15, 0] }} 
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-10 -right-10 w-32 h-32 bg-brand-accent/30 rounded-full blur-3xl"
-          />
-          <motion.div 
-            animate={{ y: [0, 20, 0] }} 
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute -bottom-10 -left-10 w-40 h-40 bg-brand-blue/30 rounded-full blur-3xl z-0"
-          />
-        </motion.div>
+        ))}
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={prev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+        >
+          <ChevronRight size={20} />
+        </button>
+
+        {/* Dots */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+          {HERO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === current ? 'w-8 h-2.5 bg-brand-accent' : 'w-2.5 h-2.5 bg-white/40 hover:bg-white/60'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

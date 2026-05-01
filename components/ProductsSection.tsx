@@ -1,80 +1,145 @@
 'use client';
 
-import { useCart } from './CartContext';
-import { motion } from 'motion/react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ShoppingBag, Star } from 'lucide-react';
+import { useRef } from 'react';
 import { PRODUCTS } from '@/lib/products';
+import { useCart } from './CartContext';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ShoppingBag, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export function ProductsSection() {
+function ProductCard({ product }: { product: (typeof PRODUCTS)[0] }) {
   const { addToCart } = useCart();
 
   return (
-    <section id="shop" className="py-16 md:py-24 bg-brand-light">
-      <div className="w-full px-4 md:px-8 lg:px-12">
-        <div className="text-center max-w-2xl mx-auto mb-12 flex flex-col items-center">
-          <span className="text-brand-accent font-medium tracking-widest uppercase text-sm mb-4 block">
-            Full Inventory
-          </span>
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-dark mb-4">Explore Collection</h2>
-          <p className="text-brand-dark/70 text-base md:text-lg">Discover our complete range of authentic Ayurvedic hair oils, hand-poured in small batches to preserve herbal potency.</p>
+    <div className="flex-shrink-0 w-44 sm:w-52 md:w-60 lg:w-64 snap-start">
+      <Link href={`/product/${product.id}`} className="group block">
+        <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 mb-3">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            referrerPolicy="no-referrer"
+            unoptimized
+          />
+          {/* Badge */}
+          {product.badge && (
+            <span className="absolute top-2.5 left-2.5 bg-brand-accent text-brand-dark text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">
+              {product.badge}
+            </span>
+          )}
+          {/* Quick Add */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(product);
+            }}
+            className="absolute bottom-3 right-3 w-9 h-9 bg-brand-accent text-brand-dark rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:bg-brand-accent-hover"
+          >
+            <ShoppingBag size={16} />
+          </button>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-          {PRODUCTS.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow-sm border border-brand-light/50 overflow-hidden group flex flex-col h-full hover:shadow-xl transition-shadow duration-300"
-            >
-              <Link href={`/product/${product.id}`} className="flex flex-col flex-1">
-                <div className="relative aspect-[4/5] sm:aspect-[1/1] bg-brand-light overflow-hidden">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute top-2 left-2 bg-brand-dark text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
-                    Best Seller
-                  </div>
-                </div>
-
-                <div className="flex flex-col flex-1 p-4">
-                  <div className="flex items-center gap-1 text-brand-accent mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} fill="currentColor" />
-                    ))}
-                    <span className="text-xs text-brand-dark/50 ml-1">(120+)</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-brand-dark leading-tight mb-2">{product.name}</h3>
-                  <p className="text-brand-dark/70 text-sm mb-4 flex-1">{product.description}</p>
-                  <p className="text-xl font-bold text-brand-dark mb-4">${product.price.toFixed(2)}</p>
-                </div>
-              </Link>
-              
-              <div className="p-4 pt-0 mt-auto">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    addToCart(product);
-                  }}
-                  className="w-full bg-brand-accent text-brand-dark font-bold py-3 px-4 rounded-sm flex items-center justify-center gap-2 hover:bg-brand-accent-hover transition-colors shadow-md uppercase tracking-wide"
-                  aria-label={`Add ${product.name} to basket`}
-                >
-                  <ShoppingBag size={18} />
-                  <span>Add to Cart</span>
-                </button>
-              </div>
-            </motion.div>
+      </Link>
+      <div className="px-1">
+        {/* Rating */}
+        <div className="flex items-center gap-0.5 mb-1">
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} size={10} fill="currentColor" className="text-brand-accent" />
           ))}
+          <span className="text-[10px] text-brand-dark/40 ml-1">120+</span>
+        </div>
+        <Link href={`/product/${product.id}`}>
+          <h3 className="text-xs sm:text-sm font-semibold text-brand-dark leading-snug mb-1.5 line-clamp-1 hover:text-brand-accent transition-colors">
+            {product.name}
+          </h3>
+        </Link>
+        <div className="flex items-center gap-2">
+          <span className="text-sm sm:text-base font-bold text-brand-dark">₹{product.salePrice || product.price}</span>
+          {product.salePrice && (
+            <span className="text-xs text-brand-dark/35 line-through">₹{product.price}</span>
+          )}
+          {product.salePrice && (
+            <span className="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+              {Math.round(((product.price - product.salePrice) / product.price) * 100)}% OFF
+            </span>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ScrollableRow({ title, subtitle, products }: { title: string; subtitle?: string; products: (typeof PRODUCTS) }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = scrollRef.current.offsetWidth * 0.7;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  return (
+    <div>
+      {/* Section Header */}
+      <div className="flex items-end justify-between mb-6 px-4 md:px-16 lg:px-24">
+        <div>
+          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-brand-dark">{title}</h2>
+          {subtitle && <p className="text-brand-dark/50 text-xs sm:text-sm mt-1">{subtitle}</p>}
+        </div>
+        <div className="hidden sm:flex items-center gap-2">
+          <button
+            onClick={() => scroll('left')}
+            className="w-9 h-9 border border-brand-dark/15 rounded-full flex items-center justify-center hover:bg-brand-dark hover:text-white transition-colors"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={() => scroll('right')}
+            className="w-9 h-9 border border-brand-dark/15 rounded-full flex items-center justify-center hover:bg-brand-dark hover:text-white transition-colors"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* Scrollable Cards */}
+      <div className="section-gutter">
+        <div
+          ref={scrollRef}
+          className="flex gap-3 sm:gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 hide-scrollbar"
+        >
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+          {/* Right spacer — uses content so it never collapses */}
+          <div className="flex-shrink-0 w-4 md:w-16 lg:w-24 min-h-[1px]" aria-hidden="true">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ProductsSection() {
+  const bestsellers = PRODUCTS.filter(p => p.badge === 'Bestseller' || true).slice(0, 8);
+  const newArrivals = PRODUCTS.filter(p => p.badge === 'New' || p.category === 'hair-care');
+
+  return (
+    <section id="shop" className="py-10 md:py-16 bg-brand-light space-y-12 md:space-y-16">
+      <ScrollableRow
+        title="Bestsellers"
+        subtitle="Our most loved products by customers across India"
+        products={bestsellers}
+      />
+      <ScrollableRow
+        title="New Arrivals"
+        subtitle="Fresh formulations just dropped"
+        products={newArrivals}
+      />
     </section>
   );
 }
