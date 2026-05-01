@@ -45,7 +45,7 @@ export function BannerSection({ banners = [] }: { banners?: BannerData[] }) {
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-3">{title}</h2>
             <p className="text-white/60 text-sm md:text-base mb-6 max-w-md">{subtitle}</p>
-            <a href={href} className="inline-flex items-center gap-2 bg-brand-accent text-brand-dark font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-sm">
+            <a href={href} className="inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-sm">
               {btnText}
             </a>
           </div>
@@ -70,8 +70,8 @@ export function TrustBanner() {
           {features.map((f) => (
             <div key={f.title} className="text-center group">
               <span className="text-2xl md:text-3xl block mb-2 group-hover:scale-110 transition-transform">{f.icon}</span>
-              <h3 className="font-bold text-brand-dark text-sm md:text-base">{f.title}</h3>
-              <p className="text-brand-dark/50 text-xs mt-0.5">{f.desc}</p>
+              <h3 className="font-bold text-black text-sm md:text-base">{f.title}</h3>
+              <p className="text-black/50 text-xs mt-0.5">{f.desc}</p>
             </div>
           ))}
         </div>
@@ -109,7 +109,7 @@ export function SecondBanner({ banners = [] }: { banners?: BannerData[] }) {
           <div className="absolute bottom-0 left-0 p-6 md:p-8">
             <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-1">{left.title}</h3>
             <p className="text-white/60 text-sm mb-3">{left.subtitle}</p>
-            <span className="inline-flex bg-brand-accent text-brand-dark font-bold px-5 py-2 rounded-sm text-xs tracking-wider">{left.btnText}</span>
+            <span className="inline-flex bg-brand-accent text-black font-bold px-5 py-2 rounded-sm text-xs tracking-wider">{left.btnText}</span>
           </div>
         </a>
         <a href={right.href} className="relative rounded-2xl overflow-hidden h-52 md:h-64 group cursor-pointer block">
@@ -119,7 +119,7 @@ export function SecondBanner({ banners = [] }: { banners?: BannerData[] }) {
           <div className="absolute bottom-0 left-0 p-6 md:p-8">
             <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-1">{right.title}</h3>
             <p className="text-white/60 text-sm mb-3">{right.subtitle}</p>
-            <span className="inline-flex bg-brand-accent text-brand-dark font-bold px-5 py-2 rounded-sm text-xs tracking-wider">{right.btnText}</span>
+            <span className="inline-flex bg-brand-accent text-black font-bold px-5 py-2 rounded-sm text-xs tracking-wider">{right.btnText}</span>
           </div>
         </a>
       </div>

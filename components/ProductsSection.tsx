@@ -22,7 +22,7 @@ function ProductCard({ product }: { product: (typeof PRODUCTS)[0] }) {
           />
           {/* Badge */}
           {product.badge && (
-            <span className="absolute top-2.5 left-2.5 bg-brand-accent text-brand-dark text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">
+            <span className="absolute top-2.5 left-2.5 bg-brand-accent text-black text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">
               {product.badge}
             </span>
           )}
@@ -33,7 +33,7 @@ function ProductCard({ product }: { product: (typeof PRODUCTS)[0] }) {
               e.stopPropagation();
               addToCart(product);
             }}
-            className="absolute bottom-3 right-3 w-9 h-9 bg-brand-accent text-brand-dark rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:bg-brand-accent-hover"
+            className="absolute bottom-3 right-3 w-9 h-9 bg-brand-accent text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:bg-brand-accent-hover"
           >
             <ShoppingBag size={16} />
           </button>
@@ -45,17 +45,17 @@ function ProductCard({ product }: { product: (typeof PRODUCTS)[0] }) {
           {[...Array(5)].map((_, i) => (
             <Star key={i} size={10} fill="currentColor" className="text-brand-accent" />
           ))}
-          <span className="text-[10px] text-brand-dark/40 ml-1">120+</span>
+          <span className="text-[10px] text-black/40 ml-1">120+</span>
         </div>
         <Link href={`/product/${product.id}`}>
-          <h3 className="text-xs sm:text-sm font-semibold text-brand-dark leading-snug mb-1.5 line-clamp-1 hover:text-brand-accent transition-colors">
+          <h3 className="text-xs sm:text-sm font-semibold text-black leading-snug mb-1.5 line-clamp-1 hover:text-brand-accent transition-colors">
             {product.name}
           </h3>
         </Link>
         <div className="flex items-center gap-2">
-          <span className="text-sm sm:text-base font-bold text-brand-dark">₹{product.salePrice || product.price}</span>
+          <span className="text-sm sm:text-base font-bold text-black">₹{product.salePrice || product.price}</span>
           {product.salePrice && (
-            <span className="text-xs text-brand-dark/35 line-through">₹{product.price}</span>
+            <span className="text-xs text-black/35 line-through">₹{product.price}</span>
           )}
           {product.salePrice && (
             <span className="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
@@ -156,7 +156,7 @@ function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight mb-3 md:mb-4 max-w-[280px] md:max-w-sm drop-shadow-md">
             {title}
           </h2>
-          <a href={href} className="w-max inline-flex items-center gap-2 bg-brand-accent text-brand-dark font-bold px-5 md:px-6 py-2.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-xs md:text-sm">
+          <a href={href} className="w-max inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-5 md:px-6 py-2.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-xs md:text-sm">
             {btnText}
           </a>
         </div>

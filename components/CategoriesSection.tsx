@@ -30,7 +30,7 @@ export function CategoriesSection() {
                 />
                 <div className="absolute inset-0 bg-brand-dark/10 group-hover:bg-brand-dark/0 transition-colors" />
               </div>
-              <span className="text-xs sm:text-sm font-semibold text-brand-dark group-hover:text-brand-accent transition-colors">
+              <span className="text-xs sm:text-sm font-semibold text-black group-hover:text-brand-accent transition-colors">
                 {cat.name}
               </span>
             </Link>

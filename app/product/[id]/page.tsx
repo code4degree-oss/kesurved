@@ -36,7 +36,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center pt-24 text-brand-dark">
           <h1 className="text-3xl font-serif font-bold mb-4">Product Not Found</h1>
-          <Link href="/" className="text-brand-blue hover:underline">Return to Home</Link>
+          <Link href="/" className="text-black hover:underline">Return to Home</Link>
         </div>
         <Footer />
       </div>
@@ -50,7 +50,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       <main className="flex-1 pt-24 pb-16 md:pt-32 md:pb-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="mb-6 md:mb-8">
-            <Link href="/" className="inline-flex items-center text-sm font-medium text-brand-dark/60 hover:text-brand-blue transition-colors">
+            <Link href="/" className="inline-flex items-center text-sm font-medium text-brand-dark/60 hover:text-black transition-colors">
               <ArrowLeft size={16} className="mr-2" />
               Back to Collection
             </Link>
@@ -109,7 +109,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       <Star key={i} size={18} fill="currentColor" />
                     ))}
                   </div>
-                  <a href="#reviews" className="text-sm font-medium text-brand-blue hover:underline">
+                  <a href="#reviews" className="text-sm font-medium text-black hover:underline">
                     120+ Customer Reviews
                   </a>
                 </div>
@@ -137,7 +137,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               {/* Badges / Guarantees */}
               <div className="flex flex-col sm:flex-row gap-6 sm:gap-4 justify-between py-6">
                 <div className="flex items-start gap-3">
-                  <div className="bg-brand-blue/10 p-2 rounded-full text-brand-blue shrink-0">
+                  <div className="bg-gray-100 p-2 rounded-full text-black shrink-0">
                     <Truck size={20} />
                   </div>
                   <div>
@@ -146,7 +146,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="bg-brand-blue/10 p-2 rounded-full text-brand-blue shrink-0">
+                  <div className="bg-gray-100 p-2 rounded-full text-black shrink-0">
                     <ShieldCheck size={20} />
                   </div>
                   <div>
@@ -155,7 +155,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="bg-brand-blue/10 p-2 rounded-full text-brand-blue shrink-0">
+                  <div className="bg-gray-100 p-2 rounded-full text-black shrink-0">
                     <RotateCcw size={20} />
                   </div>
                   <div>

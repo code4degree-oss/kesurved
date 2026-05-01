@@ -41,7 +41,7 @@ export function ReviewsSection() {
               key={review.id}
               className="bg-white p-8 rounded-3xl shadow-sm border border-brand-blue/5 relative"
             >
-              <Quote className="absolute top-6 right-6 text-brand-blue/10 w-12 h-12" />
+              <Quote className="absolute top-6 right-6 text-black/10 w-12 h-12" />
               
               <div className="flex gap-1 mb-6">
                 {[...Array(5)].map((_, index) => (
@@ -54,13 +54,13 @@ export function ReviewsSection() {
                 ))}
               </div>
               
-              <p className="text-brand-dark/80 mb-8 flex-1 leading-relaxed relative z-10">
+              <p className="text-black/80 mb-8 flex-1 leading-relaxed relative z-10">
                 &quot;{review.text}&quot;
               </p>
               
               <div className="mt-auto">
-                <p className="font-medium text-brand-dark">{review.name}</p>
-                <p className="text-sm text-brand-blue">{review.role}</p>
+                <p className="font-medium text-black">{review.name}</p>
+                <p className="text-sm text-black">{review.role}</p>
               </div>
             </div>
           ))}

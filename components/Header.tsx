@@ -45,7 +45,7 @@ export function Header() {
           {/* Mobile Menu & Logo (Left) */}
           <div className="flex items-center gap-4">
             <button 
-              className="md:hidden p-2 -ml-2 text-brand-dark hover:text-brand-blue"
+              className="md:hidden p-2 -ml-2 text-brand-dark hover:text-black"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open Mobile Menu"
             >
@@ -103,13 +103,13 @@ export function Header() {
             >
               <div className="flex items-center justify-between px-4 h-20 border-b border-brand-blue/10">
                 <a href="#" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Leaf className="text-brand-blue" />
-                  <span className="font-serif text-2xl font-semibold tracking-tight text-brand-blue">
+                  <Leaf className="text-black" />
+                  <span className="font-serif text-2xl font-semibold tracking-tight text-black">
                     Kesurved
                   </span>
                 </a>
                 <button 
-                  className="p-2 -mr-2 text-brand-dark hover:text-brand-blue bg-brand-blue/5 rounded-full"
+                  className="p-2 -mr-2 text-brand-dark hover:text-black bg-gray-100 rounded-full"
                   onClick={() => setIsMobileMenuOpen(false)}
                   aria-label="Close Mobile Menu"
                 >
@@ -117,7 +117,7 @@ export function Header() {
                 </button>
               </div>
               
-              <nav className="flex flex-col gap-6 p-8 text-2xl font-serif text-brand-blue">
+              <nav className="flex flex-col gap-6 p-8 text-2xl font-serif text-black">
                 <a 
                   href="#shop" 
                   className="pb-4 border-b border-brand-blue/10"

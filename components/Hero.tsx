@@ -82,7 +82,7 @@ export function Hero({ banners = [] }: { banners?: BannerData[] }) {
               <div className="w-full px-6 md:px-16 lg:px-24 max-w-3xl">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight whitespace-pre-line mb-4 drop-shadow-lg">{s.title}</h1>
                 <p className="text-white/80 text-sm sm:text-base md:text-lg mb-6 max-w-xl">{s.subtitle}</p>
-                <a href={s.href} className="inline-flex items-center gap-2 bg-brand-accent text-brand-dark font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 tracking-wide text-sm md:text-base">
+                <a href={s.href} className="inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 tracking-wide text-sm md:text-base">
                   {s.cta}
                 </a>
               </div>

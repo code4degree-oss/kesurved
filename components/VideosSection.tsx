@@ -41,12 +41,12 @@ export function VideosSection() {
   }, []);
 
   return (
-    <section className="py-16 md:py-24 bg-brand-light text-brand-dark overflow-hidden">
+    <section className="py-16 md:py-24 bg-brand-light text-black overflow-hidden">
       <div className="w-full px-4 md:px-8 lg:px-12">
         <div className="flex justify-between items-end mb-8 md:mb-12">
           <div>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-blue mb-2">Our Community</h2>
-            <p className="text-brand-dark/70 text-base md:text-lg">Real results and rituals from our customers.</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-black mb-2">Our Community</h2>
+            <p className="text-black/70 text-base md:text-lg">Real results and rituals from our customers.</p>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export function VideosSection() {
         {/* YouTube Videos Section */}
         <div>
           <div className="flex justify-between items-end mb-6">
-            <h3 className="text-2xl font-serif font-bold text-brand-dark">Featured Guides</h3>
+            <h3 className="text-2xl font-serif font-bold text-black">Featured Guides</h3>
           </div>
           <div className="flex gap-4 md:gap-6 overflow-x-auto pb-6 snap-x snap-mandatory hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
             {YT_VIDEOS.map((video, index) => (
