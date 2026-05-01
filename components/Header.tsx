@@ -45,7 +45,7 @@ export function Header() {
           {/* Mobile Menu & Logo (Left) */}
           <div className="flex items-center gap-4">
             <button 
-              className="md:hidden p-2 -ml-2 text-brand-dark hover:text-black"
+              className="md:hidden p-2 -ml-2 text-black hover:text-brand-accent transition-colors"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open Mobile Menu"
             >
@@ -109,7 +109,7 @@ export function Header() {
                   </span>
                 </a>
                 <button 
-                  className="p-2 -mr-2 text-brand-dark hover:text-black bg-gray-100 rounded-full"
+                  className="p-2 -mr-2 text-black hover:text-brand-accent bg-gray-100 rounded-full transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                   aria-label="Close Mobile Menu"
                 >
