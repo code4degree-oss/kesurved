@@ -22,7 +22,7 @@ npm install
 # and the new City/State fields to the Customer table.
 echo "🗄️ Generating Prisma Client and Syncing Database..."
 npx prisma generate
-npx prisma migrate deploy
+npx prisma db push --accept-data-loss
 
 # 4. Build the Next.js production bundle
 echo "🏗️ Building the Next.js application..."
