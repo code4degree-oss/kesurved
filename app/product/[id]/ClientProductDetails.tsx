@@ -108,8 +108,7 @@ export function ClientProductDetails({ product }: { product: Product }) {
               alt={product.name}
               fill
               className="object-cover"
-              referrerPolicy="no-referrer"
-              unoptimized
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
           <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar">
@@ -124,8 +123,7 @@ export function ClientProductDetails({ product }: { product: Product }) {
                   alt={`${product.name} thumbnail ${idx + 1}`}
                   fill
                   className="object-cover"
-                  referrerPolicy="no-referrer"
-                  unoptimized
+                  sizes="100px"
                 />
               </button>
             ))}

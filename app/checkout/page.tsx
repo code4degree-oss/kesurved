@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingBag, ShieldCheck, MapPin, User, Phone, ChevronLeft, Truck } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function CheckoutPage() {
   const { items, cartTotal, closeCart, cartCount } = useCart();
@@ -458,9 +459,8 @@ export default function CheckoutPage() {
               <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
                 {items.map(item => (
                   <div key={item.id} className="flex gap-3">
-                    <div className="w-14 h-14 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                    <div className="relative w-14 h-14 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                      <Image src={item.image} alt={item.name} fill className="object-cover" sizes="56px" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-medium text-gray-900 line-clamp-1">{item.name}</h4>

@@ -20,8 +20,7 @@ export function ClientGrid({ products }: { products: Product[] }) {
                 alt={product.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-                unoptimized
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
               {product.badge && (
                 <span className="absolute top-2.5 left-2.5 bg-brand-accent text-brand-dark text-[10px] font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">

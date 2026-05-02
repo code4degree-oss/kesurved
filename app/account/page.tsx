@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Package, ArrowLeft, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AccountPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -102,9 +103,8 @@ export default function AccountPage() {
                   <div className="space-y-4">
                     {order.items.map((item: any) => (
                       <div key={item.id} className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                        <div className="relative w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                          <Image src={item.product.image} alt={item.product.name} fill className="object-cover" sizes="64px" />
                         </div>
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">{item.product.name}</h4>

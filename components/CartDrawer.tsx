@@ -4,6 +4,7 @@ import { useCart } from './CartContext';
 import { ShoppingBag, X, Minus, Plus, ArrowRight, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export function CartDrawer() {
@@ -98,12 +99,9 @@ export function CartDrawer() {
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-4 items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                       <div className="w-20 h-20 bg-brand-light rounded-lg overflow-hidden flex-shrink-0">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full">
+                          <Image src={item.image} alt={item.name} fill className="object-cover" sizes="80px" />
+                        </div>
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-black text-sm truncate">{item.name}</h3>
