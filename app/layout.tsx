@@ -14,6 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://kesurved.com'),
   title: 'Kesurved | Authentic Herbal Hair Oils',
   description: 'Pure, natural, and authentic herbal hair oils for strong and beautiful hair. Restore your hair health with Kesurved.',
   openGraph: {
