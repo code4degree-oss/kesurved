@@ -3,23 +3,19 @@
 import { useCart } from './CartContext';
 import { ShoppingBag, X, Minus, Plus, ArrowRight, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export function CartDrawer() {
   const { isCartOpen, closeCart, items, updateQuantity, cartTotal } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const router = useRouter();
 
   const handleCheckout = () => {
     setIsCheckingOut(true);
-    setTimeout(() => {
-      setIsCheckingOut(false);
-      setIsSuccess(true);
-      setTimeout(() => {
-        setIsSuccess(false);
-        closeCart();
-      }, 3000);
-    }, 2000);
+    closeCart();
+    router.push('/checkout');
+    setIsCheckingOut(false);
   };
 
   // Free shipping threshold
@@ -143,24 +139,14 @@ export function CartDrawer() {
                   <span className="font-bold text-black text-xl">₹{cartTotal.toFixed(2)}</span>
                 </div>
                 
-                {isSuccess ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="w-full py-4 px-6 bg-green-50 text-green-800 rounded-sm text-center font-bold border border-green-200"
-                  >
-                    Order Placed Successfully! ✨
-                  </motion.div>
-                ) : (
                   <button
                     onClick={handleCheckout}
                     disabled={isCheckingOut}
                     className="w-full py-4 px-6 bg-brand-accent text-black rounded-sm font-bold hover:bg-brand-accent-hover transition-colors flex justify-between items-center disabled:opacity-70 disabled:cursor-not-allowed group tracking-wide"
                   >
-                    <span>{isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}</span>
+                    <span>{isCheckingOut ? 'Redirecting...' : 'Proceed to Checkout'}</span>
                     {!isCheckingOut && <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
                   </button>
-                )}
               </div>
             )}
           </motion.div>

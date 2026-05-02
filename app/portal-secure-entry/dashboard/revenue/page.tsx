@@ -1,19 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IndianRupee, TrendingUp, Calendar, BarChart3 } from 'lucide-react';
 
-// TODO: Fetch from API
-const DAILY_REVENUE: { date: string; revenue: number; orders: number }[] = [];
-
-const maxRevenue = Math.max(1, ...DAILY_REVENUE.map(d => d.revenue));
-
 export default function RevenuePage() {
+  const [dailyData, setDailyData] = useState<{ date: string; revenue: number; orders: number }[]>([]);
+  const [loading, setLoading] = useState(true);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
 
-  const totalRevenue = DAILY_REVENUE.reduce((sum, d) => sum + d.revenue, 0);
-  const totalOrders = DAILY_REVENUE.reduce((sum, d) => sum + d.orders, 0);
+  useEffect(() => {
+    fetch('/api/admin/revenue')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setDailyData(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch revenue:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredData = dailyData.filter(d => {
+    if (dateFrom && d.date < dateFrom) return false;
+    if (dateTo && d.date > dateTo) return false;
+    return true;
+  });
+
+  const maxRevenue = Math.max(1, ...filteredData.map(d => d.revenue));
+  const totalRevenue = filteredData.reduce((sum, d) => sum + d.revenue, 0);
+  const totalOrders = filteredData.reduce((sum, d) => sum + d.orders, 0);
   const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
 
   return (
@@ -88,9 +107,9 @@ export default function RevenuePage() {
       {/* Revenue Chart (CSS bars) */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <h3 className="text-sm font-bold text-gray-900 mb-6">Daily Revenue</h3>
-        {DAILY_REVENUE.length > 0 ? (
+        {filteredData.length > 0 ? (
           <div className="space-y-3">
-            {DAILY_REVENUE.map((day) => (
+            {filteredData.map((day) => (
               <div key={day.date} className="flex items-center gap-4">
                 <span className="text-xs text-gray-500 w-16 shrink-0">{day.date}</span>
                 <div className="flex-1 bg-gray-100 rounded-full h-8 overflow-hidden">

@@ -5,11 +5,13 @@ import { ProductsSection } from "@/components/ProductsSection";
 import { BannerSection, SecondBanner } from "@/components/BannerSection";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { Footer } from "@/components/Footer";
+import { getProducts, getCategories } from '@/lib/products';
 import fs from 'fs';
 import path from 'path';
 
 // Revalidate every 10 seconds so admin banner changes reflect quickly
 export const revalidate = 10;
+
 
 interface BannerData {
   id: string;
@@ -33,16 +35,18 @@ function getBanners(): BannerData[] {
   }
 }
 
-export default function Home() {
+export default async function Home() {
   const banners = getBanners();
+  const products = await getProducts();
+  const categories = await getCategories();
 
   return (
     <main className="min-h-screen flex flex-col">
       <div className="bg-brand-light">
         <Header />
         <Hero banners={banners} />
-        <CategoriesSection />
-        <ProductsSection banners={banners} />
+        <CategoriesSection categories={categories} />
+        <ProductsSection banners={banners} products={products} />
       </div>
 
       <div className="bg-white">

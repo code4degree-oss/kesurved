@@ -1,14 +1,18 @@
 'use client';
 
 import { useCart } from './CartContext';
-import { ShoppingBag, Leaf, Menu, X } from 'lucide-react';
+import { ShoppingBag, Leaf, Menu, X, User } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function Header() {
   const { openCart, cartCount } = useCart();
   const { scrollY } = useScroll();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   
   const backgroundColor = useTransform(
     scrollY,
@@ -51,12 +55,12 @@ export function Header() {
             >
               <Menu size={24} />
             </button>
-            <a href="/" className="flex items-center gap-2 group">
+            <Link href="/" className="flex items-center gap-2 group">
               <Leaf className="text-black group-hover:scale-110 transition-transform" />
               <span className="font-serif text-2xl font-semibold tracking-tight text-black">
                 Kesurved
               </span>
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation (Center) */}
@@ -68,7 +72,55 @@ export function Header() {
           </nav>
 
           {/* Icons (Right) */}
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-2 md:gap-4">
+            
+            {/* User Profile / Login */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  const phone = localStorage.getItem('customer_phone');
+                  if (phone) {
+                    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+                  } else {
+                    router.push('/login');
+                  }
+                }}
+                className="relative p-2 text-black hover:text-brand-accent transition-colors"
+                aria-label="User Account"
+              >
+                <User size={24} />
+              </button>
+
+              {/* Profile Dropdown */}
+              <AnimatePresence>
+                {isProfileDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsProfileDropdownOpen(false)}></div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-50"
+                    >
+                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-accent">
+                        Past Orders
+                      </Link>
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem('customer_phone');
+                          setIsProfileDropdownOpen(false);
+                          window.location.reload();
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
             <button
               onClick={openCart}
               className="relative p-2 text-black hover:text-brand-accent transition-colors"

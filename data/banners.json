@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "ban-1777659776624",
+    "slot": "hero",
+    "imageUrl": "/uploads/banners/banner-1777659768947.png",
+    "mobileImageUrl": "/uploads/banners/banner-1777659916436.png",
+    "title": "",
+    "subtitle": "",
+    "buttonText": "",
+    "linkedProductId": "cmon8k12x00055crdw3brip9u",
+    "linkedProductName": "Kesurved Sunscreen",
+    "isActive": true
+  }
+]

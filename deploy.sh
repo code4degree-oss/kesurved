@@ -1,37 +1,35 @@
 #!/bin/bash
+set -e
 
 # ==========================================
-# Kesurved Herbal - VM Deployment Script
+# Kesurved Herbal - VM Update Script
 # ==========================================
 # Run this script on your VM to pull the latest code,
-# sync the database, build the frontend, and restart the server.
+# sync the new database fields, build the app, and restart.
 
-echo "🚀 Starting deployment for Kesurved Herbal..."
+echo "🚀 Starting update for Kesurved Herbal..."
 
-# 1. Ensure we are in the correct directory (Optional: you can hardcode your VM path here)
-# cd /path/to/your/project
-
-# 2. Pull the latest code from Git
+# 1. Pull the latest code from Git
 echo "📥 Pulling latest code..."
 git pull origin main
 
-# 3. Install dependencies
+# 2. Install dependencies
 echo "📦 Installing dependencies..."
 npm install
 
-# 4. (Skipping Database setup for now)
-# echo "🗄️ Generating Prisma Client and Syncing Database..."
-# npx prisma generate
-# npx prisma db push --accept-data-loss
+# 3. Generate Prisma Client and Sync Database
+# This is CRITICAL now because we added the DeliveryZone table
+# and the new City/State fields to the Customer table.
+echo "🗄️ Generating Prisma Client and Syncing Database..."
+npx prisma generate
+npx prisma db push --accept-data-loss
 
-# 5. Build the Next.js production bundle
+# 4. Build the Next.js production bundle
 echo "🏗️ Building the Next.js application..."
 npm run build
 
-# 6. Restart the application using PM2
+# 5. Restart the application using PM2
 echo "🔄 Restarting the PM2 process..."
-# If this is the first time running, use: pm2 start npm --name "kesurved-app" -- start
-# Otherwise, just restart the existing process:
 pm2 restart kesurved-app || pm2 start npm --name "kesurved-app" -- start
 
-echo "✅ Deployment successful! The frontend and backend are now live."
+echo "✅ Update successful! The new checkout features and speed improvements are live."

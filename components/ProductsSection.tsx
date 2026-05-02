@@ -1,12 +1,12 @@
 'use client';
 
 import { useRef } from 'react';
-import { PRODUCTS } from '@/lib/products';
+import type { Product } from '@/lib/products';
 import { useCart } from './CartContext';
 import Link from 'next/link';
 import { ShoppingBag, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
-function ProductCard({ product }: { product: (typeof PRODUCTS)[0] }) {
+function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
 
   return (
@@ -68,7 +68,7 @@ function ProductCard({ product }: { product: (typeof PRODUCTS)[0] }) {
   );
 }
 
-function ScrollableRow({ title, subtitle, products }: { title: string; subtitle?: string; products: (typeof PRODUCTS) }) {
+function ScrollableRow({ title, subtitle, products }: { title: string; subtitle?: string; products: Product[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -134,10 +134,12 @@ interface BannerData {
 function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
   const mid = banners.find(b => b.slot === 'mid' && b.isActive);
 
-  const imgSrc = mid?.imageUrl || 'https://picsum.photos/seed/midhero/1400/500';
-  const title = mid?.title || 'Ayurvedic Rituals for Glowing Skin';
-  const btnText = mid?.buttonText || 'Shop Rituals';
-  const href = mid?.linkedProductId
+  if (!mid) return null;
+
+  const imgSrc = mid.imageUrl;
+  const title = mid.title;
+  const btnText = mid.buttonText || 'Shop Rituals';
+  const href = mid.linkedProductId
     ? mid.linkedProductId.startsWith('cat-')
       ? `/category/${mid.linkedProductId.replace('cat-', '')}`
       : `/product/${mid.linkedProductId}`
@@ -165,9 +167,9 @@ function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
   );
 }
 
-export function ProductsSection({ banners = [] }: { banners?: BannerData[] }) {
-  const bestsellers = PRODUCTS.filter(p => p.badge === 'Bestseller' || true).slice(0, 8);
-  const newArrivals = PRODUCTS.filter(p => p.badge === 'New' || p.category === 'hair-care');
+export function ProductsSection({ banners = [], products = [] }: { banners?: BannerData[], products?: Product[] }) {
+  const bestsellers = products.filter(p => p.badge === 'Best Seller' || p.badge === 'Bestseller').slice(0, 8);
+  const newArrivals = products.filter(p => p.badge === 'New Arrival' || p.badge === 'New');
 
   return (
     <section id="shop" className="py-10 md:py-16 bg-brand-light space-y-12 md:space-y-16">

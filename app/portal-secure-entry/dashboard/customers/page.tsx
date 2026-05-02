@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Users, Phone, MapPin, ShoppingBag } from 'lucide-react';
 
 interface CustomerRow {
@@ -14,17 +14,31 @@ interface CustomerRow {
   lastOrder: string;
 }
 
-// TODO: Fetch from API
-const INITIAL_CUSTOMERS: CustomerRow[] = [];
-
 export default function CustomersPage() {
+  const [customers, setCustomers] = useState<CustomerRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [stateFilter, setStateFilter] = useState('all');
 
-  const states = ['all', ...new Set(INITIAL_CUSTOMERS.map(c => c.state))];
+  useEffect(() => {
+    fetch('/api/admin/customers')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCustomers(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch customers:', err);
+        setLoading(false);
+      });
+  }, []);
 
-  const filtered = INITIAL_CUSTOMERS.filter((c) => {
-    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.phone.includes(search);
+  const states = ['all', ...new Set(customers.map(c => c.state).filter(Boolean))];
+
+  const filtered = customers.filter((c) => {
+    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) || (c.phone && c.phone.includes(search));
     const matchesState = stateFilter === 'all' || c.state === stateFilter;
     return matchesSearch && matchesState;
   });
@@ -33,7 +47,7 @@ export default function CustomersPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Customers</h2>
-        <p className="text-sm text-gray-500 mt-1">{INITIAL_CUSTOMERS.length} registered customers</p>
+        <p className="text-sm text-gray-500 mt-1">{customers.length} registered customers</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">

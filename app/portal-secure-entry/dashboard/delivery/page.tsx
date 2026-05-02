@@ -1,17 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Truck, Save } from 'lucide-react';
 
 export default function DeliveryPage() {
-  const [maharashtraCharge, setMaharashtraCharge] = useState('50');
-  const [outsideCharge, setOutsideCharge] = useState('80');
+  const [maharashtraCharge, setMaharashtraCharge] = useState('');
+  const [outsideCharge, setOutsideCharge] = useState('');
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleSave = () => {
-    // TODO: API call to save delivery charges
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  useEffect(() => {
+    fetch('/api/admin/delivery-zones')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setMaharashtraCharge(data.maharashtra.toString());
+          setOutsideCharge(data.outside.toString());
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch('/api/admin/delivery-zones', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maharashtra: maharashtraCharge, outside: outsideCharge })
+      });
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      }
+    } catch (error) {
+      console.error('Failed to save', error);
+    }
   };
 
   return (

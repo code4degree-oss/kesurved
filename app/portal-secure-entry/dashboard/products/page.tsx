@@ -1,33 +1,66 @@
 'use client';
 
-import { useState } from 'react';
-import { Plus, Search, Edit2, Trash2, GripVertical, Package } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, Search, Edit2, Trash2, GripVertical, Package, X, Upload, Loader2 } from 'lucide-react';
+
+interface CategoryOption {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 interface ProductRow {
   id: string;
   name: string;
-  category: string;
+  description: string;
+  categoryId: string;
+  categoryName?: string;
   price: number;
   salePrice: number;
   stock: number;
   weightGrams: number;
   image: string;
+  badge: string | null;
   position: number;
 }
 
-// TODO: Fetch from API
-const INITIAL_PRODUCTS: ProductRow[] = [];
-
 export default function ProductsPage() {
-  const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<ProductRow[]>([]);
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductRow | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
-    name: '', description: '', price: '', salePrice: '', stock: '', weightGrams: '', category: 'Hair Care', image: '',
+    name: '',
+    description: '',
+    price: '',
+    salePrice: '',
+    stock: '',
+    weightGrams: '',
+    categoryId: '',
+    image: '',
+    badge: '',
   });
+
+  // Load products & categories on mount
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/categories').then(r => r.json()),
+    ])
+      .then(([prods, cats]) => {
+        setProducts(prods);
+        setCategories(cats);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -35,7 +68,17 @@ export default function ProductsPage() {
 
   const openAddForm = () => {
     setEditingProduct(null);
-    setFormData({ name: '', description: '', price: '', salePrice: '', stock: '', weightGrams: '', category: 'Hair Care', image: '' });
+    setFormData({
+      name: '',
+      description: '',
+      price: '',
+      salePrice: '',
+      stock: '',
+      weightGrams: '',
+      categoryId: categories[0]?.id || '',
+      image: '',
+      badge: '',
+    });
     setShowForm(true);
   };
 
@@ -43,25 +86,91 @@ export default function ProductsPage() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      description: '',
+      description: product.description,
       price: product.price.toString(),
       salePrice: product.salePrice.toString(),
       stock: product.stock.toString(),
       weightGrams: product.weightGrams.toString(),
-      category: product.category,
+      categoryId: product.categoryId,
       image: product.image,
+      badge: product.badge || '',
     });
     setShowForm(true);
   };
 
-  const handleSave = () => {
-    // TODO: API call to save product
-    setShowForm(false);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) {
+        setFormData({ ...formData, image: data.url });
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter((p) => p.id !== id));
+  const handleSave = async () => {
+    if (!formData.name || !formData.price || !formData.salePrice || !formData.categoryId) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    setSaving(true);
+    try {
+      if (editingProduct) {
+        // Update
+        const res = await fetch(`/api/products/${editingProduct.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const updated = await res.json();
+        if (res.ok) {
+          setProducts(products.map(p => p.id === editingProduct.id ? updated : p));
+        } else {
+          alert(updated.error || 'Failed to update');
+        }
+      } else {
+        // Create
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const created = await res.json();
+        if (res.ok) {
+          setProducts([...products, created]);
+        } else {
+          alert(created.error || 'Failed to create');
+        }
+      }
+      setShowForm(false);
+    } catch {
+      alert('Save failed');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setProducts(products.filter((p) => p.id !== id));
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete');
+      }
+    } catch {
+      alert('Failed to delete');
     }
   };
 
@@ -72,6 +181,14 @@ export default function ProductsPage() {
     [newProducts[index], newProducts[targetIndex]] = [newProducts[targetIndex], newProducts[index]];
     setProducts(newProducts);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 size={32} className="animate-spin text-brand-accent" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,6 +232,7 @@ export default function ProductsPage() {
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Sale Price</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Stock</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Weight</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Badge</th>
                 <th className="text-right px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -130,14 +248,20 @@ export default function ProductsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover bg-gray-100" />
+                      {product.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover bg-gray-100" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <Package size={16} className="text-gray-300" />
+                        </div>
+                      )}
                       <span className="font-medium text-gray-900">{product.name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-brand-light text-brand-blue">
-                      {product.category}
+                      {product.categoryName || '—'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-400 line-through">₹{product.price}</td>
@@ -148,6 +272,15 @@ export default function ProductsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-500">{product.weightGrams}g</td>
+                  <td className="px-4 py-3">
+                    {product.badge ? (
+                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-brand-accent/15 text-brand-dark">
+                        {product.badge}
+                      </span>
+                    ) : (
+                      <span className="text-gray-300 text-xs">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
@@ -183,17 +316,17 @@ export default function ProductsPage() {
       {showForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white rounded-t-2xl z-10">
               <h3 className="text-lg font-bold text-gray-900">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h3>
               <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
-                <Plus size={20} className="rotate-45" />
+                <X size={20} />
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Product Name</label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Product Name *</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -214,7 +347,7 @@ export default function ProductsPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">MRP (₹)</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">MRP (₹) *</label>
                   <input
                     type="number"
                     value={formData.price}
@@ -224,7 +357,7 @@ export default function ProductsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Sale Price (₹)</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Sale Price (₹) *</label>
                   <input
                     type="number"
                     value={formData.salePrice}
@@ -256,28 +389,78 @@ export default function ProductsPage() {
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Category</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30 bg-white"
-                >
-                  <option>Hair Care</option>
-                  <option>Skin Care</option>
-                  <option>Body Care</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Category *</label>
+                  <select
+                    value={formData.categoryId}
+                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30 bg-white"
+                  >
+                    <option value="">Select category</option>
+                    {categories.map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Badge</label>
+                  <select
+                    value={formData.badge}
+                    onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30 bg-white"
+                  >
+                    <option value="">No Badge</option>
+                    <option value="Best Seller">Best Seller</option>
+                    <option value="New Arrival">New Arrival</option>
+                    <option value="Sale">Sale</option>
+                    <option value="Limited">Limited Edition</option>
+                  </select>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Product Image</label>
-                <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-brand-accent/50 transition-colors cursor-pointer">
-                  <Package size={24} className="mx-auto text-gray-300 mb-2" />
-                  <p className="text-sm text-gray-400">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-300 mt-1">PNG, JPG up to 5MB</p>
-                </div>
+                <input type="file" ref={fileRef} accept="image/*" onChange={handleImageUpload} className="hidden" />
+                {uploading ? (
+                  <div className="border-2 border-dashed border-brand-accent/30 rounded-lg p-6 text-center">
+                    <Loader2 size={24} className="mx-auto text-brand-accent animate-spin mb-2" />
+                    <p className="text-sm text-gray-500">Uploading...</p>
+                  </div>
+                ) : formData.image ? (
+                  <div className="relative rounded-lg overflow-hidden h-32 bg-gray-100 group">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => fileRef.current?.click()}
+                        className="bg-white text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-gray-100"
+                        type="button"
+                      >
+                        Change
+                      </button>
+                      <button
+                        onClick={() => setFormData({ ...formData, image: '' })}
+                        className="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-red-600"
+                        type="button"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => fileRef.current?.click()}
+                    className="w-full border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-brand-accent/50 transition-colors cursor-pointer"
+                    type="button"
+                  >
+                    <Upload size={24} className="mx-auto text-gray-300 mb-2" />
+                    <p className="text-sm text-gray-400">Click to upload</p>
+                    <p className="text-xs text-gray-300 mt-1">PNG, JPG up to 5MB</p>
+                  </button>
+                )}
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 sticky bottom-0 bg-white rounded-b-2xl">
               <button
                 onClick={() => setShowForm(false)}
                 className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
@@ -286,9 +469,10 @@ export default function ProductsPage() {
               </button>
               <button
                 onClick={handleSave}
-                className="px-5 py-2.5 text-sm font-bold bg-brand-accent text-brand-dark rounded-lg hover:bg-brand-accent-hover transition-colors"
+                disabled={saving}
+                className="px-5 py-2.5 text-sm font-bold bg-brand-accent text-brand-dark rounded-lg hover:bg-brand-accent-hover transition-colors disabled:opacity-50"
               >
-                {editingProduct ? 'Save Changes' : 'Add Product'}
+                {saving ? 'Saving...' : editingProduct ? 'Save Changes' : 'Add Product'}
               </button>
             </div>
           </div>

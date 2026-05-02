@@ -20,6 +20,7 @@ model Category {
   id       String    @id @default(cuid())
   name     String
   slug     String    @unique
+  image    String?
   products Product[]
 }
 
@@ -34,6 +35,7 @@ model Product {
   weightGrams Int      // Weight in grams for India Post
   stock       Int      @default(0)
   position    Int      @default(0)  // For drag-to-reorder in admin
+  badge       String?  // e.g. "Bestseller", "New"
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
@@ -147,7 +149,9 @@ model Review {
   phone      String   // Reviewer phone
   rating     Int      // 1-5
   text       String
+  image      String?  // Optional uploaded image URL
   approved   Boolean  @default(false)  // Only approved reviews show on site
+  featured   Boolean  @default(false)  // Show on main page
   createdAt  DateTime @default(now())
 }
 

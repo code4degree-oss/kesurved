@@ -45,20 +45,7 @@ const SLOT_CONFIG: Record<BannerSlot, { label: string; desc: string; desktopDim:
   },
 };
 
-const AVAILABLE_PRODUCTS = [
-  { id: 'p1', name: 'Brahmi & Amla Growth Elixir' },
-  { id: 'p2', name: 'Bhringraj Scalp Therapy' },
-  { id: 'p3', name: 'Hibiscus Daily Shine Oil' },
-  { id: 'p4', name: 'Argan & Rosemary Repair Blend' },
-  { id: 'p5', name: 'Neem & Tulsi Detoxifying Seroil' },
-  { id: 'p6', name: 'Shikakai & Coconut Hydration' },
-  { id: 'p7', name: 'Onion Seed & Fenugreek Booster' },
-  { id: 'p8', name: 'Castor & Almond Leave-In Serum' },
-  { id: 'cat-hair-care', name: '→ Hair Care (Category)' },
-  { id: 'cat-skin-care', name: '→ Skin Care (Category)' },
-  { id: 'cat-body-care', name: '→ Body Care (Category)' },
-  { id: 'cat-combos', name: '→ Combos (Category)' },
-];
+// AVAILABLE_PRODUCTS is now loaded from the API — see useEffect below
 
 // Toggle Switch
 function ToggleSwitch({ isOn, onToggle, label }: { isOn: boolean; onToggle: () => void; label?: string }) {
@@ -159,6 +146,7 @@ export default function BannersPage() {
   const [editingBanner, setEditingBanner] = useState<BannerItem | null>(null);
   const [activeSlotFilter, setActiveSlotFilter] = useState<BannerSlot | 'all'>('all');
   const [saving, setSaving] = useState(false);
+  const [availableProducts, setAvailableProducts] = useState<{ id: string; name: string }[]>([]);
 
   const [formData, setFormData] = useState({
     slot: 'hero' as BannerSlot,
@@ -170,12 +158,28 @@ export default function BannersPage() {
     linkedProductId: '',
   });
 
-  // Load banners from API on mount
+  // Load banners + products/categories from API on mount
   useEffect(() => {
     fetch('/api/banners')
       .then(res => res.json())
       .then(data => setBanners(data))
       .catch(() => {});
+
+    // Load products and categories for the link dropdown
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/categories').then(r => r.json()),
+    ]).then(([products, categories]) => {
+      const prodOptions = (products || []).map((p: { id: string; name: string }) => ({
+        id: p.id,
+        name: p.name,
+      }));
+      const catOptions = (categories || []).map((c: { id: string; name: string; slug: string }) => ({
+        id: `cat-${c.slug}`,
+        name: `→ ${c.name} (Category)`,
+      }));
+      setAvailableProducts([...prodOptions, ...catOptions]);
+    }).catch(() => {});
   }, []);
 
   // Save banners to API
@@ -224,7 +228,7 @@ export default function BannersPage() {
   };
 
   const handleSave = () => {
-    const linkedProduct = AVAILABLE_PRODUCTS.find(p => p.id === formData.linkedProductId);
+    const linkedProduct = availableProducts.find(p => p.id === formData.linkedProductId);
     let updated: BannerItem[];
     if (editingBanner) {
       updated = banners.map(b => b.id === editingBanner.id ? {
@@ -464,12 +468,12 @@ export default function BannersPage() {
                 <select value={formData.linkedProductId} onChange={(e) => setFormData({ ...formData, linkedProductId: e.target.value })} className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30 bg-white">
                   <option value="">— No redirect —</option>
                   <optgroup label="Products">
-                    {AVAILABLE_PRODUCTS.filter(p => !p.id.startsWith('cat-')).map((p) => (
+                    {availableProducts.filter(p => !p.id.startsWith('cat-')).map((p) => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
                   </optgroup>
                   <optgroup label="Category Pages">
-                    {AVAILABLE_PRODUCTS.filter(p => p.id.startsWith('cat-')).map((p) => (
+                    {availableProducts.filter(p => p.id.startsWith('cat-')).map((p) => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
                   </optgroup>

@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Search, FileSpreadsheet, Package, CheckCircle2, Truck, PackageCheck, XCircle, Clock } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import { INDIA_POST_CONFIG, INDIA_POST_COLUMNS } from '@/lib/india-post-config';
 
 type OrderStatus = 'ALL' | 'NEW' | 'PACKED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
@@ -15,10 +17,16 @@ interface OrderRow {
   status: OrderStatus;
   date: string;
   canCancel: boolean;
+  shippingName?: string;
+  shippingPhone?: string;
+  shippingAddress1?: string;
+  shippingAddress2?: string;
+  shippingCity?: string;
+  shippingState?: string;
+  shippingPincode?: string;
 }
 
-// TODO: Fetch from API
-const INITIAL_ORDERS: OrderRow[] = [];
+import { useEffect } from 'react';
 
 const STATUS_CONFIG = {
   ALL: { label: 'All', icon: Package, color: 'text-gray-500', bg: 'bg-gray-100 text-gray-700' },
@@ -30,10 +38,24 @@ const STATUS_CONFIG = {
 };
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState(INITIAL_ORDERS);
+  const [orders, setOrders] = useState<OrderRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<OrderStatus>('ALL');
   const [search, setSearch] = useState('');
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    fetch('/api/admin/orders')
+      .then(res => res.json())
+      .then(data => {
+        setOrders(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch orders:', err);
+        setLoading(false);
+      });
+  }, []);
 
   const filteredOrders = orders.filter((o) => {
     const matchesTab = activeTab === 'ALL' || o.status === activeTab;
@@ -56,24 +78,106 @@ export default function OrdersPage() {
     }
   };
 
-  const markAsPacked = () => {
-    setOrders(orders.map(o => selectedOrders.has(o.id) ? { ...o, status: 'PACKED' as OrderStatus } : o));
+  const markAsPacked = async () => {
+    for (const id of Array.from(selectedOrders)) {
+      await updateStatus(id, 'PACKED');
+    }
     setSelectedOrders(new Set());
   };
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     const packedOrders = orders.filter(o => o.status === 'PACKED');
     if (packedOrders.length === 0) {
       alert('No packed orders to export. Mark orders as PACKED first.');
       return;
     }
-    // TODO: Real Excel generation using xlsx + india-post-config
-    alert(`Exporting ${packedOrders.length} packed orders to India Post Excel format...`);
-    setOrders(orders.map(o => o.status === 'PACKED' ? { ...o, status: 'SHIPPED' as OrderStatus } : o));
+    
+    // Format for India Post Bulk Booking
+    const exportData = packedOrders.map((o, index) => {
+      const row: Record<string, string | number | boolean> = {};
+      
+      // Initialize all columns in exact order
+      INDIA_POST_COLUMNS.forEach(col => { row[col] = ''; });
+
+      row['SERIAL NUMBER'] = index + 1;
+      row['BARCODE NO'] = INDIA_POST_CONFIG.barcodeNo;
+      row['PHYSICAL WEIGHT'] = o.weight;
+      row['REG'] = INDIA_POST_CONFIG.reg;
+      row['P'] = false;
+      row['RECEIVER CITY'] = o.shippingCity || 'Not Provided';
+      row['RECEIVER PINCODE'] = o.shippingPincode || 'Not Provided';
+      row['RECEIVER NAME'] = o.shippingName || o.customer;
+      row['RECEIVER ADD LINE 1'] = o.shippingAddress1 || 'Not Provided';
+      row['RECEIVER ADD LINE 2'] = o.shippingAddress2 || '';
+      row['RECEIVER ADD LINE 3'] = '';
+      row['ACK'] = INDIA_POST_CONFIG.ack;
+      row['SENDER MOBILE NO'] = INDIA_POST_CONFIG.sender.mobileNo;
+      row['RECEIVER MOBILE NO'] = o.shippingPhone || o.phone;
+      row['PREPAYMENT CODE'] = INDIA_POST_CONFIG.prepaymentCode;
+      row['VALUE OF PREPAYMENT'] = INDIA_POST_CONFIG.valueOfPrepayment;
+      row['CODR/COD'] = INDIA_POST_CONFIG.codrCod;
+      row['VALUE FOR CODR/COD'] = INDIA_POST_CONFIG.valueForCodrCod;
+      row['INSURANCE TYPE'] = INDIA_POST_CONFIG.insuranceType;
+      row['VALUE OF INSURANCE'] = INDIA_POST_CONFIG.valueOfInsurance;
+      row['SHAPE OF ARTICLE'] = INDIA_POST_CONFIG.shapeOfArticle;
+      row['LENGTH'] = INDIA_POST_CONFIG.dimensions.length;
+      row['BREADTH/DIAMETER'] = INDIA_POST_CONFIG.dimensions.breadthDiameter;
+      row['HEIGHT'] = INDIA_POST_CONFIG.dimensions.height;
+      row['PRIORITY FLAG'] = INDIA_POST_CONFIG.priorityFlag;
+      row['DELIVERY INSTRUCTION'] = INDIA_POST_CONFIG.deliveryInstruction;
+      row['DELIVERY SLOT'] = INDIA_POST_CONFIG.deliverySlot;
+      row['INSTRUCTION RTS'] = INDIA_POST_CONFIG.instructionRTS;
+      row['SENDER NAME'] = INDIA_POST_CONFIG.sender.name;
+      row['SENDER COMPANY NAME'] = INDIA_POST_CONFIG.sender.companyName;
+      row['SENDER CITY'] = INDIA_POST_CONFIG.sender.city;
+      row['SENDER STATE/UT'] = INDIA_POST_CONFIG.sender.stateUT;
+      row['SENDER PINCODE'] = INDIA_POST_CONFIG.sender.pincode;
+      row['SENDER EMAILID'] = INDIA_POST_CONFIG.sender.emailId;
+      row['SENDER ALT CONTACT'] = INDIA_POST_CONFIG.sender.altContact;
+      row['SENDER KYC'] = INDIA_POST_CONFIG.sender.kyc;
+      row['SENDER TAX'] = INDIA_POST_CONFIG.sender.tax;
+      row['RECEIVER COMPANY NAME'] = '';
+      row['RECEIVER STATE'] = o.shippingState || 'Not Provided';
+      row['RECEIVER EMAILID'] = '';
+      row['RECEIVER ALT CONTACT'] = '';
+      row['RECEIVER KYC'] = '';
+      row['RECEIVER TAX REF'] = '';
+      row['ALT ADDRESS FLAG'] = INDIA_POST_CONFIG.altAddressFlag;
+      row['BULK REFERENCE'] = INDIA_POST_CONFIG.bulkReference;
+      row['SENDER ADD LINE 1'] = INDIA_POST_CONFIG.sender.addressLine1;
+      row['SENDER ADD LINE 2'] = INDIA_POST_CONFIG.sender.addressLine2;
+      row['SENDER ADD LINE 3'] = INDIA_POST_CONFIG.sender.addressLine3;
+
+      return row;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Packed Orders");
+    
+    // Download the Excel file
+    XLSX.writeFile(workbook, `Kesurved_Dispatch_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+    for (const order of packedOrders) {
+      await updateStatus(order.id, 'SHIPPED');
+    }
+    
+    alert(`Successfully exported ${packedOrders.length} orders to Excel and marked them as SHIPPED.`);
   };
 
-  const updateStatus = (id: string, newStatus: OrderStatus) => {
-    setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
+  const updateStatus = async (id: string, newStatus: OrderStatus) => {
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
+      }
+    } catch (err) {
+      console.error('Failed to update status', err);
+    }
   };
 
   const packedCount = orders.filter(o => o.status === 'PACKED').length;
@@ -143,6 +247,42 @@ export default function OrdersPage() {
       </div>
 
       {/* Orders Table */}
+      {loading ? (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50/50">
+                  <th className="px-4 py-3 w-10" />
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Order</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Customer</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Items</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Weight</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Total</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Status</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Date</th>
+                  <th className="text-right px-4 py-3 text-xs font-medium text-gray-400 uppercase">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {[1,2,3,4,5].map(i => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-4 py-3"><div className="w-4 h-4 bg-gray-100 rounded" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-gray-100 rounded w-20" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-gray-100 rounded w-28" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-gray-100 rounded w-8" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-gray-100 rounded w-12" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-gray-100 rounded w-16" /></td>
+                    <td className="px-4 py-3"><div className="h-5 bg-gray-100 rounded-full w-16" /></td>
+                    <td className="px-4 py-3"><div className="h-4 bg-gray-100 rounded w-20" /></td>
+                    <td className="px-4 py-3"><div className="h-6 bg-gray-100 rounded w-20 ml-auto" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -199,13 +339,29 @@ export default function OrdersPage() {
                         Mark Packed
                       </button>
                     )}
-                    {order.status === 'SHIPPED' && (
+                    {order.status === 'PACKED' && (
                       <button
-                        onClick={() => updateStatus(order.id, 'DELIVERED')}
-                        className="text-xs font-medium text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors"
+                        onClick={() => updateStatus(order.id, 'NEW')}
+                        className="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
                       >
-                        Mark Delivered
+                        Revert to New
                       </button>
+                    )}
+                    {order.status === 'SHIPPED' && (
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => updateStatus(order.id, 'PACKED')}
+                          className="text-xs font-medium text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg transition-colors"
+                        >
+                          Revert to Packed
+                        </button>
+                        <button
+                          onClick={() => updateStatus(order.id, 'DELIVERED')}
+                          className="text-xs font-medium text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors"
+                        >
+                          Mark Delivered
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -220,6 +376,7 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
+      )}
 
       {/* Cancel Policy Notice */}
       <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 text-sm text-amber-700">
