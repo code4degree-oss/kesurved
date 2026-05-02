@@ -33,12 +33,14 @@ export async function POST(request: NextRequest) {
       { expiresIn: '24h' }
     );
 
+    const isHttps = request.headers.get('x-forwarded-proto') === 'https' || request.nextUrl.protocol === 'https:';
+    
     // Set httpOnly cookie
     const response = NextResponse.json({ success: true, message: 'Login successful' });
     response.cookies.set('admin_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: isHttps,
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24, // 24 hours
       path: '/',
     });
