@@ -28,7 +28,7 @@ export function FAQSection() {
   if (faqs.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-24 bg-brand-light">
+    <section className="py-16 md:py-24 bg-white">
       <div className="w-full px-4 md:px-16 lg:px-24 max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-black mb-4">Frequently Asked Questions</h2>
