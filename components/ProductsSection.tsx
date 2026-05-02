@@ -129,6 +129,7 @@ interface BannerData {
   title: string;
   buttonText: string;
   linkedProductId: string;
+  showText?: boolean;
 }
 
 function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
@@ -147,21 +148,27 @@ function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
 
   return (
     <div className="w-full">
-      <div className="w-full relative overflow-hidden shadow-xl h-48 md:h-64 lg:h-72 group">
+      <div className="w-full relative overflow-hidden shadow-xl h-[300px] md:h-[400px] lg:h-[500px] group">
+        <a href={href} className="absolute inset-0 z-10 block" aria-label={title || "Banner link"} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={imgSrc} alt="Mid Banner" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/50 to-transparent" />
-        <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 lg:px-24">
-          <span className="inline-block bg-brand-accent/20 text-brand-accent text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-full mb-2 uppercase tracking-wider w-max">
-            Exclusive
-          </span>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight mb-3 md:mb-4 max-w-[280px] md:max-w-sm drop-shadow-md">
-            {title}
-          </h2>
-          <a href={href} className="w-max inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-5 md:px-6 py-2.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-xs md:text-sm">
-            {btnText}
-          </a>
-        </div>
+        
+        {mid.showText !== false && (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/50 to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 lg:px-24 z-20 pointer-events-none">
+              <span className="inline-block bg-brand-accent/20 text-brand-accent text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-full mb-2 uppercase tracking-wider w-max pointer-events-auto">
+                Exclusive
+              </span>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight mb-3 md:mb-4 max-w-[280px] md:max-w-sm drop-shadow-md pointer-events-auto">
+                {title}
+              </h2>
+              <a href={href} className="w-max inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-5 md:px-6 py-2.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-xs md:text-sm pointer-events-auto">
+                {btnText}
+              </a>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

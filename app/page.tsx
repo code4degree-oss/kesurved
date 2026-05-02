@@ -51,7 +51,6 @@ export default async function Home() {
       </div>
 
       <div className="bg-white">
-        <BannerSection banners={banners} />
         <SecondBanner banners={banners} />
         <ReviewsSection />
       </div>
