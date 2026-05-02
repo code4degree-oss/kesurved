@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import type { Product } from '@/lib/products';
 import { useCart } from './CartContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingBag, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function ProductCard({ product }: { product: Product }) {
@@ -13,12 +14,12 @@ function ProductCard({ product }: { product: Product }) {
     <div className="flex-shrink-0 w-44 sm:w-52 md:w-60 lg:w-64 snap-start">
       <Link href={`/product/${product.id}`} className="group block">
         <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 mb-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={product.image}
             alt={product.name}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 50vw, 25vw"
           />
           {/* Badge */}
           {product.badge && (
@@ -150,8 +151,7 @@ function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
     <div className="w-full">
       <div className="w-full relative overflow-hidden shadow-xl h-[200px] md:h-[250px] lg:h-[300px] group">
         <a href={href} className="absolute inset-0 z-10 block" aria-label={title || "Banner link"} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imgSrc} alt="Mid Banner" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+        <Image src={imgSrc} alt={title || 'Mid Banner'} fill className="object-cover group-hover:scale-105 transition-transform duration-700" sizes="100vw" />
         
         {mid.showText !== false && (
           <>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Category } from '@/lib/products';
 
 export function CategoriesSection({ categories = [] }: { categories?: Category[] }) {
@@ -22,10 +23,12 @@ export function CategoriesSection({ categories = [] }: { categories?: Category[]
               className="flex flex-col items-center gap-3 group"
             >
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-3 border-brand-accent/30 group-hover:border-brand-accent transition-colors shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-                <img
+                <Image
                   src={cat.image || '/placeholder.png'}
                   alt={cat.name}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="120px"
                 />
                 <div className="absolute inset-0 bg-brand-dark/10 group-hover:bg-brand-dark/0 transition-colors" />
               </div>

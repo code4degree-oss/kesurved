@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 interface BannerData {
   id: string;
@@ -78,12 +79,12 @@ export function BeforeAfterSection() {
               className={`flex-shrink-0 w-[75vw] sm:w-[45vw] snap-start ${results.length <= 5 ? 'md:w-full' : 'md:w-[20vw]'}`}
             >
               <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-200 group border border-gray-100 shadow-sm">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
+                <Image 
                   src={result.imageUrl} 
                   alt="Before and After Result" 
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                  loading="lazy" 
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                  sizes="(max-width: 768px) 75vw, 20vw"
                 />
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Star, Quote } from 'lucide-react';
+import Image from 'next/image';
 
 export function ReviewsSection() {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -51,8 +52,8 @@ export function ReviewsSection() {
               </p>
               
               {review.image && (
-                <div className="mb-6 rounded-md overflow-hidden bg-gray-100 h-32 w-full">
-                  <img src={review.image} alt="Review attachment" className="w-full h-full object-cover" />
+                <div className="mb-6 rounded-md overflow-hidden bg-gray-100 h-32 w-full relative">
+                  <Image src={review.image} alt="Review attachment" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
                 </div>
               )}
               
