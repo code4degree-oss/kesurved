@@ -9,6 +9,7 @@ interface BannerData {
   subtitle: string;
   buttonText: string;
   linkedProductId: string;
+  showText?: boolean;
   isActive: boolean;
 }
 
@@ -37,21 +38,25 @@ export function BannerSection({ banners = [] }: { banners?: BannerData[] }) {
           <img src={imgSrc} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" loading="lazy" />
         )}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-accent/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
         </div>
-        <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-12 p-8 md:p-12 lg:p-16">
-          <div className="flex-1 text-center md:text-left">
-            <span className="inline-block bg-brand-accent/20 text-brand-accent text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
-              Limited Offer
-            </span>
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-3">{title}</h2>
-            <p className="text-white/60 text-sm md:text-base mb-6 max-w-md">{subtitle}</p>
-            <a href={href} className="inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-sm">
-              {btnText}
-            </a>
+        
+        {/* Clickable Overlay */}
+        <a href={href} className="absolute inset-0 z-10 block" aria-label={title || "Banner link"} />
+
+        {mid.showText !== false && (
+          <div className="relative z-20 flex flex-col md:flex-row items-center gap-6 md:gap-12 p-8 md:p-12 lg:p-16 pointer-events-none">
+            <div className="flex-1 text-center md:text-left pointer-events-auto">
+              <span className="inline-block bg-brand-accent/20 text-brand-accent text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
+                Limited Offer
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-3">{title}</h2>
+              <p className="text-white/60 text-sm md:text-base mb-6 max-w-md">{subtitle}</p>
+              <a href={href} className="inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg tracking-wide text-sm">
+                {btnText}
+              </a>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

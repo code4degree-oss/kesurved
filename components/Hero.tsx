@@ -12,6 +12,7 @@ interface BannerData {
   subtitle: string;
   buttonText: string;
   linkedProductId: string;
+  showText?: boolean;
   isActive: boolean;
 }
 
@@ -22,6 +23,7 @@ interface Slide {
   href: string;
   image: string;
   mobileImage: string;
+  showText: boolean;
 }
 
 const FALLBACK: Slide[] = [
@@ -32,6 +34,7 @@ const FALLBACK: Slide[] = [
     href: '#shop',
     image: 'https://picsum.photos/seed/hero1/1400/600',
     mobileImage: 'https://picsum.photos/seed/hero1m/800/1000',
+    showText: true,
   },
 ];
 
@@ -51,6 +54,7 @@ export function Hero({ banners = [] }: { banners?: BannerData[] }) {
       href: getLink(b.linkedProductId),
       image: b.imageUrl,
       mobileImage: b.mobileImageUrl || b.imageUrl,
+      showText: b.showText !== false, // default true
     }));
 
   const slides = heroSlides.length > 0 ? heroSlides : FALLBACK;
@@ -73,20 +77,28 @@ export function Hero({ banners = [] }: { banners?: BannerData[] }) {
             key={i}
             className={`absolute inset-0 transition-opacity duration-700 ${i === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
+            {/* Clickable Overlay for the whole banner */}
+            <a href={s.href} className="absolute inset-0 z-10 block" aria-label={s.title || "Banner link"} />
+            
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={s.image} alt={s.title} className="hidden md:block w-full h-full object-cover" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'low'} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={s.mobileImage} alt={s.title} className="block md:hidden w-full h-full object-cover" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'low'} />
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/40 to-transparent" />
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full px-6 md:px-16 lg:px-24 max-w-3xl">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight whitespace-pre-line mb-4 drop-shadow-lg">{s.title}</h1>
-                <p className="text-white/80 text-sm sm:text-base md:text-lg mb-6 max-w-xl">{s.subtitle}</p>
-                <a href={s.href} className="inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 tracking-wide text-sm md:text-base">
-                  {s.cta}
-                </a>
-              </div>
-            </div>
+            
+            {s.showText && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/40 to-transparent z-10 pointer-events-none" />
+                <div className="absolute inset-0 flex items-center z-20 pointer-events-none">
+                  <div className="w-full px-6 md:px-16 lg:px-24 max-w-3xl pointer-events-auto">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight whitespace-pre-line mb-4 drop-shadow-lg">{s.title}</h1>
+                    <p className="text-white/80 text-sm sm:text-base md:text-lg mb-6 max-w-xl">{s.subtitle}</p>
+                    <a href={s.href} className="inline-flex items-center gap-2 bg-brand-accent text-black font-bold px-8 py-3.5 rounded-sm hover:bg-brand-accent-hover transition-colors shadow-lg shadow-brand-accent/30 tracking-wide text-sm md:text-base">
+                      {s.cta}
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ))}
 

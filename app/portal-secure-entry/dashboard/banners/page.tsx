@@ -15,6 +15,7 @@ interface BannerItem {
   buttonText: string;
   linkedProductId: string;
   linkedProductName: string;
+  showText?: boolean;
   isActive: boolean;
 }
 
@@ -156,6 +157,7 @@ export default function BannersPage() {
     subtitle: '',
     buttonText: 'Shop Now',
     linkedProductId: '',
+    showText: true,
   });
 
   // Load banners + products/categories from API on mount
@@ -209,6 +211,7 @@ export default function BannersPage() {
       subtitle: '',
       buttonText: 'Shop Now',
       linkedProductId: '',
+      showText: true,
     });
     setShowForm(true);
   };
@@ -223,6 +226,7 @@ export default function BannersPage() {
       subtitle: banner.subtitle,
       buttonText: banner.buttonText,
       linkedProductId: banner.linkedProductId,
+      showText: banner.showText !== false, // default true
     });
     setShowForm(true);
   };
@@ -373,9 +377,16 @@ export default function BannersPage() {
                   </div>
                   {banner.subtitle && <p className="text-xs text-gray-400 mb-2">{banner.subtitle}</p>}
                   <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <span className="bg-brand-accent/10 text-brand-dark font-medium px-2 py-0.5 rounded">
-                      Button: &quot;{banner.buttonText}&quot;
-                    </span>
+                    {banner.showText !== false && (
+                      <span className="bg-brand-accent/10 text-brand-dark font-medium px-2 py-0.5 rounded">
+                        Button: &quot;{banner.buttonText}&quot;
+                      </span>
+                    )}
+                    {!banner.showText && banner.showText !== undefined && (
+                      <span className="bg-gray-100 text-gray-600 font-medium px-2 py-0.5 rounded">
+                        Text Overlay Hidden
+                      </span>
+                    )}
                     {banner.linkedProductName && (
                       <span className="bg-green-50 text-green-700 font-medium px-2 py-0.5 rounded flex items-center gap-1">
                         <ExternalLink size={10} />
@@ -463,6 +474,15 @@ export default function BannersPage() {
                 <input type="text" value={formData.buttonText} onChange={(e) => setFormData({ ...formData, buttonText: e.target.value })} placeholder="Shop Now" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30" />
                 <p className="text-xs text-gray-400 mt-1">e.g. &quot;Shop Now&quot;, &quot;View Combo&quot;, &quot;Buy Now&quot;</p>
               </div>
+
+              <div className="flex items-center justify-between bg-gray-50 border border-gray-100 rounded-lg p-4">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-900">Show Text & Button Overlay</h4>
+                  <p className="text-xs text-gray-500 mt-0.5">If OFF, the banner will just be the image (the whole image will be clickable).</p>
+                </div>
+                <ToggleSwitch isOn={formData.showText} onToggle={() => setFormData({ ...formData, showText: !formData.showText })} />
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">When button is clicked, go to...</label>
                 <select value={formData.linkedProductId} onChange={(e) => setFormData({ ...formData, linkedProductId: e.target.value })} className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30 bg-white">

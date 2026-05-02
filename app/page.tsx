@@ -22,6 +22,7 @@ interface BannerData {
   subtitle: string;
   buttonText: string;
   linkedProductId: string;
+  showText?: boolean;
   isActive: boolean;
 }
 
