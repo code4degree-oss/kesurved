@@ -12,35 +12,12 @@ export function ReviewsSection() {
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
           setReviews(data);
-        } else {
-          // Fallback static reviews if no featured reviews exist
-          setReviews([
-            {
-              id: 1,
-              name: 'Priya M.',
-              role: 'Verified Buyer',
-              text: 'After centuries of trying commercial products, my roots finally feel alive again. The Bhringraj blend smells incredibly earthly and reduced my hair fall within 3 weeks.',
-              rating: 5,
-            },
-            {
-              id: 2,
-              name: 'Sarah J.',
-              role: 'Verified Buyer',
-              text: 'I was skeptical about oiling my fine hair, but the Hibiscus Daily oil is so lightweight! It gives me this gorgeous gloss without weighing my hair down.',
-              rating: 5,
-            },
-            {
-              id: 3,
-              name: 'Anita D.',
-              role: 'Verified Buyer',
-              text: 'The ritual of massaging this oil into my scalp has become my favorite part of Sunday. The scent alone is therapeutic. My hair has never been this thick.',
-              rating: 4,
-            }
-          ]);
         }
       })
       .catch(console.error);
   }, []);
+
+  if (reviews.length === 0) return null;
 
   return (
     <section className="py-24 bg-white">

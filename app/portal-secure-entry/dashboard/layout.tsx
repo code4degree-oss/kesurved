@@ -19,6 +19,7 @@ import {
   Truck,
   Settings,
   ImageIcon,
+  MessageCircle,
 } from 'lucide-react';
 
 const SIDEBAR_ITEMS = [
@@ -31,6 +32,7 @@ const SIDEBAR_ITEMS = [
   { label: 'Reviews', href: '/portal-secure-entry/dashboard/reviews', icon: Star },
   { label: 'Revenue', href: '/portal-secure-entry/dashboard/revenue', icon: TrendingUp },
   { label: 'Delivery Zones', href: '/portal-secure-entry/dashboard/delivery', icon: Truck },
+  { label: 'FAQs', href: '/portal-secure-entry/dashboard/faqs', icon: MessageCircle },
   { label: 'Settings', href: '/portal-secure-entry/dashboard/settings', icon: Settings },
 ];
 

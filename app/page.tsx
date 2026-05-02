@@ -4,6 +4,8 @@ import { CategoriesSection } from "@/components/CategoriesSection";
 import { ProductsSection } from "@/components/ProductsSection";
 import { BannerSection, SecondBanner } from "@/components/BannerSection";
 import { ReviewsSection } from "@/components/ReviewsSection";
+import { BeforeAfterSection } from "@/components/BeforeAfterSection";
+import { FAQSection } from "@/components/FAQSection";
 import { Footer } from "@/components/Footer";
 import { getProducts, getCategories } from '@/lib/products';
 import fs from 'fs';
@@ -52,7 +54,9 @@ export default async function Home() {
 
       <div className="bg-white">
         <SecondBanner banners={banners} />
+        <BeforeAfterSection banners={banners} />
         <ReviewsSection />
+        <FAQSection />
       </div>
 
       <Footer />

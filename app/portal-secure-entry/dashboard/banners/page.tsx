@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Plus, Trash2, ExternalLink, ImageIcon, Edit2, X, Info, Monitor, Smartphone, Upload, EyeOff, Loader2 } from 'lucide-react';
 
-type BannerSlot = 'hero' | 'mid' | 'bottom-left' | 'bottom-right';
+type BannerSlot = 'hero' | 'mid' | 'bottom-left' | 'bottom-right' | 'before-after';
 
 interface BannerItem {
   id: string;
@@ -43,6 +43,12 @@ const SLOT_CONFIG: Record<BannerSlot, { label: string; desc: string; desktopDim:
     desc: 'Right side of the two-column banner near the bottom.',
     desktopDim: '700 × 400 px',
     mobileDim: '800 × 400 px',
+  },
+  'before-after': {
+    label: 'Before / After Images',
+    desc: 'Customer result images shown above reviews. Displays as 5-col row on desktop, carousel on mobile.',
+    desktopDim: '800 × 800 px',
+    mobileDim: '800 × 800 px',
   },
 };
 
