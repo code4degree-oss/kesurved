@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Plus, Search, Edit2, Trash2, GripVertical, Package, X, Upload, Loader2 } from 'lucide-react';
+import { compressImage } from '@/lib/image-compression';
 
 interface CategoryOption {
   id: string;
@@ -103,8 +104,9 @@ export default function ProductsPage() {
     if (!file) return;
     setUploading(true);
     try {
+      const compressedFile = await compressImage(file, 1000, 1000, 0.85);
       const fd = new FormData();
-      fd.append('file', file);
+      fd.append('file', compressedFile);
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
       const data = await res.json();
       if (data.url) {

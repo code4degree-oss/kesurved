@@ -2,6 +2,7 @@
 
 import { Layers, Plus, Trash2, Loader2, Edit2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { compressImage } from '@/lib/image-compression';
 
 // Image Uploader — uploads to /api/upload and returns a real URL
 function ImageUploader({ label, currentImage, dimension, onImageSelect }: {
@@ -19,8 +20,9 @@ function ImageUploader({ label, currentImage, dimension, onImageSelect }: {
 
     setUploading(true);
     try {
+      const compressedFile = await compressImage(file, 800, 800, 0.85);
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', compressedFile);
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.url) {

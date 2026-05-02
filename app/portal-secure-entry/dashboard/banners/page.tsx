@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Plus, Trash2, ExternalLink, ImageIcon, Edit2, X, Info, Monitor, Smartphone, Upload, EyeOff, Loader2 } from 'lucide-react';
+import { compressImage } from '@/lib/image-compression';
 
 type BannerSlot = 'hero' | 'mid' | 'bottom-left' | 'bottom-right';
 
@@ -80,8 +81,9 @@ function ImageUploader({ label, currentImage, dimension, onImageSelect }: {
 
     setUploading(true);
     try {
+      const compressedFile = await compressImage(file, 1600, 1600, 0.85);
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', compressedFile);
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.url) {
