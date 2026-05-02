@@ -2,31 +2,65 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Phone, ArrowRight } from 'lucide-react';
+import { Phone, ArrowRight, Package, Leaf } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [mobile, setMobile] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     if (mobile.length === 10) {
-      localStorage.setItem('customer_phone', mobile);
-      router.push('/account');
+      // Check if this phone has any orders
+      try {
+        const res = await fetch(`/api/customer/orders?phone=${mobile}`);
+        const data = await res.json();
+        
+        localStorage.setItem('customer_phone', mobile);
+        
+        if (data.orders && data.orders.length > 0) {
+          router.push('/account');
+        } else {
+          // Phone is saved, but no orders yet — redirect to account anyway
+          router.push('/account');
+        }
+      } catch {
+        localStorage.setItem('customer_phone', mobile);
+        router.push('/account');
+      }
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 max-w-md w-full">
-        <h1 className="text-3xl font-bold font-playfair mb-2 text-center">Track Your Orders</h1>
-        <p className="text-gray-600 mb-8 text-center">Enter your mobile number to view your past orders and their status.</p>
+      <Link href="/" className="flex items-center gap-2 mb-8 group">
+        <Leaf className="text-black group-hover:scale-110 transition-transform" />
+        <span className="font-serif text-2xl font-semibold tracking-tight text-black">Kesurved</span>
+      </Link>
+
+      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-md w-full">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 bg-brand-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Package size={24} className="text-brand-accent" />
+          </div>
+          <h1 className="text-2xl font-bold font-serif mb-2">Track Your Orders</h1>
+          <p className="text-gray-500 text-sm">Enter the mobile number you used while placing your order to view order status and history.</p>
+        </div>
         
-        <form onSubmit={handleLogin} className="space-y-6">
+        {error && (
+          <div className="mb-6 p-3 bg-red-50 text-red-600 border border-red-100 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Mobile Number</label>
             <div className="relative">
-              <span className="absolute left-3 top-2.5 text-gray-500 flex items-center">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                 <Phone size={18} />
               </span>
               <input
@@ -34,8 +68,8 @@ export default function LoginPage() {
                 type="tel"
                 value={mobile}
                 onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:ring-brand-accent focus:border-brand-accent text-lg"
-                placeholder="10-digit mobile number"
+                className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-accent/30 focus:border-brand-accent text-lg transition-all"
+                placeholder="Enter 10-digit number"
                 pattern="[0-9]{10}"
                 title="Please enter a valid 10-digit mobile number"
               />
@@ -45,12 +79,21 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={mobile.length !== 10}
-            className="w-full py-4 px-6 bg-brand-accent text-black rounded-sm font-bold hover:bg-brand-accent-hover transition-colors flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group tracking-wide text-lg"
+            className="w-full py-3.5 px-6 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all flex justify-center items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed group text-base"
           >
-            <span>View Orders</span>
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <span>View My Orders</span>
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </form>
+
+        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          <p className="text-sm text-gray-400">
+            Don&apos;t have an account? Just shop and checkout — we&apos;ll create one for you automatically!
+          </p>
+          <Link href="/" className="inline-block mt-3 text-sm font-medium text-black hover:text-brand-accent transition-colors">
+            ← Continue Shopping
+          </Link>
+        </div>
       </div>
     </div>
   );

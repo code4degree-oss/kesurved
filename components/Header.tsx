@@ -1,7 +1,7 @@
 'use client';
 
 import { useCart } from './CartContext';
-import { ShoppingBag, Leaf, Menu, X, User } from 'lucide-react';
+import { ShoppingBag, Leaf, Menu, X, User, Package } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -100,10 +100,18 @@ export function Header() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-50"
+                      className="absolute right-0 mt-2 w-52 bg-white border border-gray-100 rounded-xl shadow-xl py-1.5 z-50"
                     >
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-accent">
-                        Past Orders
+                      <div className="px-4 py-2.5 border-b border-gray-100">
+                        <p className="text-xs text-gray-400">Signed in as</p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{localStorage.getItem('customer_phone')}</p>
+                      </div>
+                      <Link 
+                        href="/account" 
+                        onClick={() => setIsProfileDropdownOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-accent transition-colors"
+                      >
+                        My Orders
                       </Link>
                       <button
                         onClick={() => {
@@ -111,7 +119,7 @@ export function Header() {
                           setIsProfileDropdownOpen(false);
                           window.location.reload();
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                       >
                         Sign Out
                       </button>
@@ -197,6 +205,14 @@ export function Header() {
                 >
                   Contact
                 </a>
+                <Link 
+                  href="/login" 
+                  className="pb-4 border-b border-brand-blue/10 flex items-center gap-3"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Package size={22} className="text-brand-accent" />
+                  Track Order
+                </Link>
               </nav>
               
               <div className="mt-auto p-8 bg-brand-blue/5">
