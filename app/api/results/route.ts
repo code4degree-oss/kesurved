@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { verifyAdminToken, unauthorizedResponse } from '@/lib/admin-auth';
 
 const DATA_FILE = path.join(process.cwd(), 'data', 'results.json');
 
@@ -21,6 +22,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (!verifyAdminToken(request)) return unauthorizedResponse();
   ensureDataDir();
   const results = await request.json();
   fs.writeFileSync(DATA_FILE, JSON.stringify(results, null, 2), 'utf-8');

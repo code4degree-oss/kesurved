@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { OrderStatus } from '@prisma/client';
+import { verifyAdminToken, unauthorizedResponse } from '@/lib/admin-auth';
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (!verifyAdminToken(req)) return unauthorizedResponse();
   try {
     const { id } = await params;
     const body = await req.json();

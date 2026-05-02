@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { verifyAdminToken, unauthorizedResponse } from '@/lib/admin-auth';
 
 export async function GET() {
   try {
@@ -21,7 +22,8 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
+  if (!verifyAdminToken(req)) return unauthorizedResponse();
   try {
     const { maharashtra, outside } = await req.json();
 

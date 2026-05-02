@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { verifyAdminToken, unauthorizedResponse } from '@/lib/admin-auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (!verifyAdminToken(request)) return unauthorizedResponse();
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: 'asc' }
