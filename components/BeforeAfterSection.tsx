@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface BannerData {
@@ -12,12 +12,22 @@ interface BannerData {
   linkedProductId: string;
 }
 
-export function BeforeAfterSection({ banners = [] }: { banners?: BannerData[] }) {
+export function BeforeAfterSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  
-  const beforeAfterImages = banners.filter(b => b.slot === 'before-after' && b.isActive);
+  const [results, setResults] = useState<{ id: string, imageUrl: string, isActive: boolean }[]>([]);
 
-  if (beforeAfterImages.length === 0) return null;
+  useEffect(() => {
+    fetch('/api/results')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setResults(data.filter(r => r.isActive));
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  if (results.length === 0) return null;
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -39,7 +49,7 @@ export function BeforeAfterSection({ banners = [] }: { banners?: BannerData[] })
           </div>
           
           {/* Desktop Navigation Arrows (only show if more than 5 images) */}
-          {beforeAfterImages.length > 5 && (
+          {results.length > 5 && (
             <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => scroll('left')}
@@ -60,26 +70,21 @@ export function BeforeAfterSection({ banners = [] }: { banners?: BannerData[] })
         {/* Carousel / Grid Container */}
         <div 
           ref={scrollRef}
-          className={`flex overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar gap-4 md:gap-6 ${beforeAfterImages.length <= 5 ? 'md:grid md:grid-cols-5 md:overflow-visible' : ''}`}
+          className={`flex overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar gap-4 md:gap-6 ${results.length <= 5 ? 'md:grid md:grid-cols-5 md:overflow-visible' : ''}`}
         >
-          {beforeAfterImages.map((banner) => (
+          {results.map((result) => (
             <div 
-              key={banner.id} 
-              className={`flex-shrink-0 w-[75vw] sm:w-[45vw] snap-start ${beforeAfterImages.length <= 5 ? 'md:w-full' : 'md:w-[20vw]'}`}
+              key={result.id} 
+              className={`flex-shrink-0 w-[75vw] sm:w-[45vw] snap-start ${results.length <= 5 ? 'md:w-full' : 'md:w-[20vw]'}`}
             >
               <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-200 group border border-gray-100 shadow-sm">
-                <a 
-                  href={banner.linkedProductId ? (banner.linkedProductId.startsWith('cat-') ? `/category/${banner.linkedProductId.replace('cat-', '')}` : `/product/${banner.linkedProductId}`) : '#'} 
-                  className="block w-full h-full"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={banner.imageUrl} 
-                    alt="Before and After Result" 
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    loading="lazy" 
-                  />
-                </a>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={result.imageUrl} 
+                  alt="Before and After Result" 
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  loading="lazy" 
+                />
               </div>
             </div>
           ))}

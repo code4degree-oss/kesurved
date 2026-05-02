@@ -148,7 +148,7 @@ function MidPromoBanner({ banners = [] }: { banners?: BannerData[] }) {
 
   return (
     <div className="w-full">
-      <div className="w-full relative overflow-hidden shadow-xl h-[120px] md:h-[140px] lg:h-[150px] group">
+      <div className="w-full relative overflow-hidden shadow-xl h-[200px] md:h-[250px] lg:h-[300px] group">
         <a href={href} className="absolute inset-0 z-10 block" aria-label={title || "Banner link"} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={imgSrc} alt="Mid Banner" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
