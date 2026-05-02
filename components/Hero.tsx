@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 interface BannerData {
   id: string;
@@ -80,10 +81,8 @@ export function Hero({ banners = [] }: { banners?: BannerData[] }) {
             {/* Clickable Overlay for the whole banner */}
             <a href={s.href} className="absolute inset-0 z-10 block" aria-label={s.title || "Banner link"} />
             
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={s.image} alt={s.title} className="hidden md:block w-full h-full object-cover" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'low'} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={s.mobileImage} alt={s.title} className="block md:hidden w-full h-full object-cover" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'low'} />
+            <Image src={s.image} alt={s.title || 'Banner'} fill priority={i === 0} className="hidden md:block object-cover" sizes="100vw" />
+            <Image src={s.mobileImage} alt={s.title || 'Banner'} fill priority={i === 0} className="block md:hidden object-cover" sizes="100vw" />
             
             {s.showText && (
               <>

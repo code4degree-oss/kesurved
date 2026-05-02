@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 
 interface BannerData {
   id: string;
@@ -34,8 +35,7 @@ export function BannerSection({ banners = [] }: { banners?: BannerData[] }) {
     <section className="py-6 md:py-10">
       <div className="relative overflow-hidden bg-gradient-to-r from-[#1a1a2e] via-[#16213e] to-[#0f3460] mx-4 md:mx-16 lg:mx-24 rounded-2xl md:rounded-3xl">
         {imgSrc && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imgSrc} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" loading="lazy" />
+          <Image src={imgSrc} alt="" fill className="absolute inset-0 object-cover opacity-40" sizes="100vw" />
         )}
         <div className="absolute inset-0 opacity-20">
         </div>
@@ -114,8 +114,7 @@ export function SecondBanner({ banners = [] }: { banners?: BannerData[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 md:px-16 lg:px-24">
         {left && (
           <a href={left.href} className="relative rounded-2xl overflow-hidden h-52 md:h-64 group cursor-pointer block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={left.image} alt={left.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            <Image src={left.image} alt={left.title || 'Banner'} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 to-transparent" />
             <div className="absolute bottom-0 left-0 p-6 md:p-8">
               <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-1">{left.title}</h3>
@@ -126,8 +125,7 @@ export function SecondBanner({ banners = [] }: { banners?: BannerData[] }) {
         )}
         {right && (
           <a href={right.href} className="relative rounded-2xl overflow-hidden h-52 md:h-64 group cursor-pointer block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={right.image} alt={right.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            <Image src={right.image} alt={right.title || 'Banner'} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 to-transparent" />
             <div className="absolute bottom-0 left-0 p-6 md:p-8">
               <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-1">{right.title}</h3>
