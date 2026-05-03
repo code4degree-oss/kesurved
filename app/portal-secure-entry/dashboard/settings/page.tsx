@@ -6,7 +6,7 @@ import { useState } from 'react';
 export default function SettingsPage() {
   const [storeName, setStoreName] = useState('Kesurved Herbal Products');
   const [cancelHours, setCancelHours] = useState('4');
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState('999');
+
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
@@ -43,16 +43,7 @@ export default function SettingsPage() {
           <p className="text-xs text-gray-400 mt-1">Customers can cancel orders within this many hours of placing</p>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">Free Shipping Threshold (₹)</label>
-          <input
-            type="number"
-            value={freeShippingThreshold}
-            onChange={(e) => setFreeShippingThreshold(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30"
-          />
-          <p className="text-xs text-gray-400 mt-1">Orders above this amount get free shipping</p>
-        </div>
+
 
         <button
           onClick={handleSave}

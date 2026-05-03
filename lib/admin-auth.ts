@@ -10,23 +10,29 @@ const JWT_SECRET = process.env.JWT_SECRET || 'kesurved-admin-secret-key-change-i
 export function verifyAdminToken(request: NextRequest): { email: string; role: string } | null {
   try {
     const token = request.cookies.get('admin_token')?.value;
-    if (!token) return null;
+    if (!token) {
+      console.error('[AUTH DEBUG] No token found in cookies');
+      return null;
+    }
 
     const decoded = jwt.verify(token, JWT_SECRET) as { email: string; role: string };
-    if (decoded.role !== 'admin') return null;
+    if (decoded.role !== 'admin') {
+      console.error('[AUTH DEBUG] Role is not admin');
+      return null;
+    }
 
     return decoded;
-  } catch {
+  } catch (err: any) {
+    console.error(`[AUTH DEBUG] JWT verify failed: ${err.message}`);
     return null;
   }
 }
 
-/**
- * Helper to return a 401 response for unauthenticated requests.
- */
-export function unauthorizedResponse() {
+export function unauthorizedResponse(debugInfo?: string) {
   return NextResponse.json(
-    { error: 'Unauthorized. Please log in to the admin panel.' },
+    { error: 'Unauthorized. Please log in to the admin panel.', debug: debugInfo },
     { status: 401 }
   );
 }
+
+

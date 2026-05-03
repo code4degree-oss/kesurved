@@ -1,14 +1,14 @@
 'use client';
 
 import { useCart } from './CartContext';
-import { ShoppingBag, X, Minus, Plus, ArrowRight, Truck } from 'lucide-react';
+import { ShoppingBag, X, Minus, Plus, ArrowRight, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 
 export function CartDrawer() {
-  const { isCartOpen, closeCart, items, updateQuantity, cartTotal } = useCart();
+  const { isCartOpen, closeCart, items, updateQuantity, removeFromCart, clearCart, cartTotal } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
 
@@ -18,11 +18,6 @@ export function CartDrawer() {
     router.push('/checkout');
     setIsCheckingOut(false);
   };
-
-  // Free shipping threshold
-  const FREE_SHIPPING_THRESHOLD = 999;
-  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
-  const shippingProgress = Math.min(100, (cartTotal / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
     <AnimatePresence>
@@ -59,28 +54,6 @@ export function CartDrawer() {
               </button>
             </div>
 
-            {/* Free Shipping Progress Bar */}
-            {items.length > 0 && (
-              <div className="px-6 py-3 bg-brand-light border-b border-gray-200">
-                {remainingForFreeShipping > 0 ? (
-                  <p className="text-sm text-black mb-2">
-                    Add <span className="font-bold text-black">₹{remainingForFreeShipping.toFixed(0)}</span> more to get <span className="font-bold text-green-600">Free Shipping!</span>
-                  </p>
-                ) : (
-                  <p className="text-sm text-green-600 font-bold mb-2 flex items-center gap-1">
-                    <Truck size={16} /> You qualify for Free Shipping! 🎉
-                  </p>
-                )}
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${shippingProgress}%` }}
-                    className="h-2 rounded-full bg-brand-accent"
-                  />
-                </div>
-              </div>
-            )}
-
             {/* Cart Items */}
             <div className="flex-1 overflow-y-auto p-6 bg-gray-50/50">
               {items.length === 0 ? (
@@ -97,15 +70,24 @@ export function CartDrawer() {
               ) : (
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                    <div key={item.id} className="relative flex gap-4 items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                      {/* Remove Item Button */}
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-400 hover:text-red-500 transition-colors"
+                        aria-label={`Remove ${item.name}`}
+                      >
+                        <X size={14} />
+                      </button>
+
                       <div className="w-20 h-20 bg-brand-light rounded-lg overflow-hidden flex-shrink-0">
                         <div className="relative w-full h-full">
                           <Image src={item.image} alt={item.name} fill className="object-cover" sizes="80px" />
                         </div>
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 pr-4">
                         <h3 className="font-bold text-black text-sm truncate">{item.name}</h3>
-                        <p className="text-black font-bold mt-1">₹{item.price.toFixed(2)}</p>
+                        <p className="text-black font-bold mt-1">₹{(item.salePrice || item.price).toFixed(2)}</p>
                         
                         <div className="flex items-center gap-3 mt-2">
                           <button
@@ -144,6 +126,14 @@ export function CartDrawer() {
                   >
                     <span>{isCheckingOut ? 'Redirecting...' : 'Proceed to Checkout'}</span>
                     {!isCheckingOut && <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
+                  </button>
+
+                  <button
+                    onClick={clearCart}
+                    className="w-full mt-3 py-3 px-6 bg-white border border-gray-200 text-red-500 rounded-sm font-medium hover:bg-red-50 hover:border-red-200 transition-colors flex items-center justify-center gap-2 text-sm"
+                  >
+                    <Trash2 size={16} />
+                    Clear Cart
                   </button>
               </div>
             )}

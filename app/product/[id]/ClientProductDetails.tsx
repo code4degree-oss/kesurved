@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useCart } from '@/components/CartContext';
 import { ShoppingBag, Star, Truck, ShieldCheck, RotateCcw, Upload, Loader2, Scale } from 'lucide-react';
+import { compressImage } from '@/lib/image-compression';
 import type { Product, Review } from '@/lib/products';
 
 export function ClientProductDetails({ product }: { product: Product }) {
@@ -46,8 +47,9 @@ export function ClientProductDetails({ product }: { product: Product }) {
     if (!file) return;
     setUploadingImage(true);
     try {
+      const compressedFile = await compressImage(file, 1000, 1000, 0.85);
       const fd = new FormData();
-      fd.append('file', file);
+      fd.append('file', compressedFile);
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
       const data = await res.json();
       if (data.url) {
@@ -171,8 +173,8 @@ export function ClientProductDetails({ product }: { product: Product }) {
                 <Truck size={20} />
               </div>
               <div>
-                <h4 className="font-semibold text-brand-dark text-sm mb-1">Free Shipping</h4>
-                <p className="text-xs text-brand-dark/60">On orders over ₹999</p>
+                <h4 className="font-semibold text-brand-dark text-sm mb-1">Fast Delivery</h4>
+                <p className="text-xs text-brand-dark/60">Safe & secure shipping</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -253,8 +255,8 @@ export function ClientProductDetails({ product }: { product: Product }) {
                 </div>
               ) : reviewForm.image ? (
                 <div className="relative w-24 h-24 rounded-md overflow-hidden bg-gray-100">
-                  <img src={reviewForm.image} alt="Review upload" className="w-full h-full object-cover" />
-                  <button type="button" onClick={() => setReviewForm(prev => ({ ...prev, image: '' }))} className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 text-xs">X</button>
+                  <Image src={reviewForm.image} alt="Review upload" fill className="object-cover" sizes="100px" />
+                  <button type="button" onClick={() => setReviewForm(prev => ({ ...prev, image: '' }))} className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 text-xs z-10">X</button>
                 </div>
               ) : (
                 <button type="button" onClick={() => fileRef.current?.click()} className="flex items-center gap-2 border border-dashed border-gray-300 rounded-md px-4 py-2 hover:bg-gray-50 text-sm">
@@ -293,8 +295,8 @@ export function ClientProductDetails({ product }: { product: Product }) {
                 </div>
                 <p className="text-gray-700 mb-4">{review.text}</p>
                 {review.image && (
-                  <div className="w-24 h-24 rounded-md overflow-hidden bg-gray-100">
-                    <img src={review.image} alt="Review" className="w-full h-full object-cover" />
+                  <div className="relative w-24 h-24 rounded-md overflow-hidden bg-gray-100">
+                    <Image src={review.image} alt="Review" fill className="object-cover" sizes="100px" />
                   </div>
                 )}
               </div>

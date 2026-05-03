@@ -66,7 +66,7 @@ export function TrustBanner() {
   const features = [
     { icon: '🌿', title: '100% Organic', desc: 'No chemicals, ever' },
     { icon: '🧪', title: 'Lab Tested', desc: 'Dermatologically safe' },
-    { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹999' },
+    { icon: '🚚', title: 'Fast Delivery', desc: 'Safe & secure shipping' },
     { icon: '↩️', title: 'Easy Returns', desc: '30-day money back' },
   ];
 

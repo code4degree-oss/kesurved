@@ -44,6 +44,10 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
+        <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-black font-medium mb-6 transition-colors">
+          <ArrowLeft size={18} />
+          Back to Home
+        </Link>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold font-playfair flex items-center gap-2">

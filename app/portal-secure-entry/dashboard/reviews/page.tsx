@@ -79,11 +79,10 @@ export default function ReviewsPage() {
           <button
             key={tab}
             onClick={() => setFilter(tab as any)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
-              filter === tab
+            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${filter === tab
                 ? 'bg-white shadow-sm border border-gray-200 text-gray-900'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
-            }`}
+              }`}
           >
             {tab}
           </button>
@@ -109,13 +108,13 @@ export default function ReviewsPage() {
                   ))}
                 </div>
                 <p className="text-sm text-gray-600 mb-4">{review.text}</p>
-                
+
                 {review.image && (
                   <div className="mb-4 rounded-md overflow-hidden bg-gray-100 w-32 h-32 border border-gray-200">
                     <img src={review.image} alt="Review attachment" className="w-full h-full object-cover" />
                   </div>
                 )}
-                
+
                 <p className="text-xs text-gray-400">
                   Product: <span className="font-medium text-gray-600">{review.product?.name || 'Unknown'}</span>
                 </p>

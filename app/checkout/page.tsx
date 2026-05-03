@@ -467,7 +467,7 @@ export default function CheckoutPage() {
                       <p className="text-xs text-gray-400 mt-0.5">Qty: {item.quantity}</p>
                     </div>
                     <div className="text-sm font-bold text-gray-900 shrink-0">
-                      ₹{(item.price * item.quantity).toFixed(0)}
+                      ₹{((item.salePrice || item.price) * item.quantity).toFixed(0)}
                     </div>
                   </div>
                 ))}
