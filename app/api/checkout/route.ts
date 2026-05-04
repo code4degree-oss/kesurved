@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     
     total += deliveryCharge;
 
-    // 3. Create or Update Customer
+    // 3. Create or Update Customer (safe to do before payment — just saves contact info)
     let dbCustomer = await prisma.customer.findUnique({
       where: { phone: customer.mobile }
     });
@@ -94,43 +94,37 @@ export async function POST(req: Request) {
       });
     }
 
-    // 4. Create Order
-    const order = await prisma.order.create({
-      data: {
-        customerId: dbCustomer.id,
-        status: 'NEW',
-        total: total,
-        deliveryCharge: deliveryCharge,
-        totalWeightGrams: totalWeightGrams,
-        paymentMethod: 'ONLINE',
-        shippingName: customer.name,
-        shippingPhone: customer.mobile,
-        shippingAddress1: customer.addressLine1,
-        shippingAddress2: customer.addressLine2,
-        shippingCity: customer.city || 'Not Provided',
-        shippingState: customer.state || 'Not Provided',
-        shippingPincode: customer.pincode,
-        items: {
-          create: orderItemsData
-        }
-      }
-    });
-
-    // 4. Create Razorpay Order
+    // 4. Create Razorpay Order ONLY — do NOT create DB order yet
+    //    The DB order will be created in /api/checkout/verify AFTER payment succeeds
     const rpOptions = {
       amount: Math.round(total * 100), // in paise
       currency: 'INR',
-      receipt: order.id,
+      receipt: dbCustomer.id, // use customer ID as receipt reference
     };
     
     const rpOrder = await razorpay.orders.create(rpOptions);
 
+    // 5. Return Razorpay details + all data needed to create the order after verification
     return NextResponse.json({
       order_id: rpOrder.id,
       amount: rpOptions.amount,
       currency: rpOptions.currency,
       key_id: process.env.RAZORPAY_KEY_ID,
-      local_order_id: order.id
+      // Pass order data to frontend so it can send it to verify endpoint
+      orderPayload: {
+        customerId: dbCustomer.id,
+        total,
+        deliveryCharge,
+        totalWeightGrams,
+        orderItemsData,
+        shippingName: customer.name,
+        shippingPhone: customer.mobile,
+        shippingAddress1: customer.addressLine1,
+        shippingAddress2: customer.addressLine2 || null,
+        shippingCity: customer.city || 'Not Provided',
+        shippingState: customer.state || 'Not Provided',
+        shippingPincode: customer.pincode,
+      }
     });
 
   } catch (error: any) {

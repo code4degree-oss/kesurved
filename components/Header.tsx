@@ -205,14 +205,17 @@ export function Header() {
                 >
                   Contact
                 </a>
-                <Link 
-                  href="/login" 
-                  className="pb-4 border-b border-brand-blue/10 flex items-center gap-3"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                <button 
+                  className="pb-4 border-b border-brand-blue/10 flex items-center gap-3 text-left w-full"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    const phone = localStorage.getItem('customer_phone');
+                    router.push(phone ? '/account' : '/login');
+                  }}
                 >
                   <Package size={22} className="text-brand-accent" />
                   Track Order
-                </Link>
+                </button>
               </nav>
               
               <div className="mt-auto p-8 bg-brand-blue/5">

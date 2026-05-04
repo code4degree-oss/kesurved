@@ -25,7 +25,7 @@ function OrderSuccessContent() {
 
         <div className="space-y-3">
           <Link 
-            href="/login"
+            href="/account"
             className="block w-full py-3 px-4 bg-brand-accent text-black rounded-sm font-bold hover:bg-brand-accent-hover transition-colors"
           >
             View Orders

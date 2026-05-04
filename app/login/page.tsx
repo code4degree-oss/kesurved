@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Phone, ArrowRight, Package, Leaf } from 'lucide-react';
 import Link from 'next/link';
@@ -9,6 +9,14 @@ export default function LoginPage() {
   const [mobile, setMobile] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+
+  // Auto-redirect if already logged in
+  useEffect(() => {
+    const storedPhone = localStorage.getItem('customer_phone');
+    if (storedPhone) {
+      router.push('/account');
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

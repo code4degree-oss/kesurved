@@ -187,7 +187,7 @@ export default function CheckoutPage() {
         description: 'Herbal Hair Oils Purchase',
         order_id: data.order_id,
         handler: async function (response: any) {
-          // 4. Verify Payment on backend
+          // 4. Verify Payment on backend — order is created ONLY after this succeeds
           try {
             const verifyRes = await fetch('/api/checkout/verify', {
               method: 'POST',
@@ -196,13 +196,13 @@ export default function CheckoutPage() {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
-                local_order_id: data.local_order_id
+                orderPayload: data.orderPayload,
               }),
             });
             const verifyData = await verifyRes.json();
             
             if (verifyRes.ok) {
-              router.push(`/order-success?orderId=${data.local_order_id}`);
+              router.push(`/order-success?orderId=${verifyData.order_id}`);
             } else {
               setError(verifyData.error || 'Payment verification failed');
             }
