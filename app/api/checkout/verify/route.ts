@@ -104,7 +104,7 @@ export async function POST(req: Request) {
       }
     });
 
-    return NextResponse.json({ success: true, order_id: order.id });
+    return NextResponse.json({ success: true, order_id: order.orderNumber || order.id });
 
   } catch (error: any) {
     console.error('Payment verification error:', error);
