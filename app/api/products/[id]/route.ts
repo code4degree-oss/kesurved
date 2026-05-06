@@ -17,7 +17,8 @@ export async function PUT(
       weightGrams,
       categoryId,
       image,
-      badge
+      badge,
+      sku
     } = body;
 
     const product = await prisma.product.update({
@@ -32,6 +33,7 @@ export async function PUT(
         categoryId,
         image,
         badge: badge || null,
+        sku: sku || null,
       },
       include: { category: true }
     });

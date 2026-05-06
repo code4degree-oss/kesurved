@@ -32,6 +32,7 @@ const SIDEBAR_ITEMS = [
   { label: 'Customers', href: '/portal-secure-entry/dashboard/customers', icon: Users },
   { label: 'Reviews', href: '/portal-secure-entry/dashboard/reviews', icon: Star },
   { label: 'Revenue', href: '/portal-secure-entry/dashboard/revenue', icon: TrendingUp },
+  { label: 'Analytics', href: '/portal-secure-entry/dashboard/analytics', icon: TrendingUp },
   { label: 'Delivery Zones', href: '/portal-secure-entry/dashboard/delivery', icon: Truck },
   { label: 'Results (Before/After)', href: '/portal-secure-entry/dashboard/results', icon: ImagePlay },
   { label: 'FAQs', href: '/portal-secure-entry/dashboard/faqs', icon: MessageCircle },

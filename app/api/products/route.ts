@@ -34,7 +34,8 @@ export async function POST(req: Request) {
       weightGrams, 
       categoryId, 
       image,
-      badge
+      badge,
+      sku
     } = body;
 
     const product = await prisma.product.create({
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
         categoryId,
         image,
         badge,
+        sku,
         position: await prisma.product.count() // append to end
       },
       include: { category: true }

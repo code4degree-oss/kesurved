@@ -9,6 +9,7 @@ type OrderStatus = 'ALL' | 'NEW' | 'PACKED' | 'SHIPPED' | 'DELIVERED' | 'CANCELL
 
 interface OrderRow {
   id: string;
+  orderNumber: string;
   customer: string;
   phone: string;
   items: number;
@@ -59,7 +60,9 @@ export default function OrdersPage() {
 
   const filteredOrders = orders.filter((o) => {
     const matchesTab = activeTab === 'ALL' || o.status === activeTab;
-    const matchesSearch = o.customer.toLowerCase().includes(search.toLowerCase()) || o.id.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = o.customer.toLowerCase().includes(search.toLowerCase()) || 
+                          o.orderNumber.toLowerCase().includes(search.toLowerCase()) || 
+                          o.id.toLowerCase().includes(search.toLowerCase());
     return matchesTab && matchesSearch;
   });
 
@@ -314,7 +317,7 @@ export default function OrdersPage() {
                       />
                     )}
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">{order.id}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900">{order.orderNumber}</td>
                   <td className="px-4 py-3">
                     <div>
                       <p className="text-gray-900">{order.customer}</p>

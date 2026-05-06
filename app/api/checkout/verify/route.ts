@@ -53,9 +53,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Total amount mismatch. Please retry checkout.' }, { status: 400 });
     }
 
-    // 4. Create the order NOW — payment is verified
+    // 4. Generate orderNumber
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dateStr = `${yyyy}${mm}${dd}`;
+
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    
+    const orderCountToday = await prisma.order.count({
+      where: {
+        createdAt: {
+          gte: startOfDay
+        }
+      }
+    });
+
+    const runningNumber = 1001 + orderCountToday;
+    const orderNumber = `KV${dateStr}${runningNumber}`;
+
+    // 5. Create the order NOW — payment is verified
     const order = await prisma.order.create({
       data: {
+        orderNumber,
         customerId: orderPayload.customerId,
         status: 'NEW',
         total: orderPayload.total,

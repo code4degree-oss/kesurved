@@ -89,7 +89,7 @@ export default function AccountPage() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Order #</p>
-                    <p className="font-mono text-sm">{order.id}</p>
+                    <p className="font-mono text-sm">{order.orderNumber || order.id}</p>
                   </div>
                   <div>
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${

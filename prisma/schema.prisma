@@ -34,6 +34,7 @@ model Product {
   image       String   // /uploads/products/xxx.jpg
   weightGrams Int      // Weight in grams for India Post
   stock       Int      @default(0)
+  sku         String?  // Stock Keeping Unit
   position    Int      @default(0)  // For drag-to-reorder in admin
   badge       String?  // e.g. "Bestseller", "New"
   categoryId  String
@@ -87,6 +88,7 @@ model Customer {
 // ─── Orders ────────────────────────────────────────────────
 model Order {
   id                String      @id @default(cuid())
+  orderNumber       String?     @unique // e.g. KV202605061025
   customerId        String
   customer          Customer    @relation(fields: [customerId], references: [id])
   status            OrderStatus @default(NEW)

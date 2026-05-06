@@ -22,6 +22,7 @@ interface ProductRow {
   weightGrams: number;
   image: string;
   badge: string | null;
+  sku: string | null;
   position: number;
 }
 
@@ -47,6 +48,7 @@ export default function ProductsPage() {
     categoryId: '',
     image: '',
     badge: '',
+    sku: '',
   });
 
   // Load products & categories on mount
@@ -79,6 +81,7 @@ export default function ProductsPage() {
       categoryId: categories[0]?.id || '',
       image: '',
       badge: '',
+      sku: '',
     });
     setShowForm(true);
   };
@@ -95,6 +98,7 @@ export default function ProductsPage() {
       categoryId: product.categoryId,
       image: product.image,
       badge: product.badge || '',
+      sku: product.sku || '',
     });
     setShowForm(true);
   };
@@ -345,6 +349,16 @@ export default function ProductsPage() {
                   placeholder="Product description"
                   rows={3}
                   className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30 resize-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wider">SKU</label>
+                <input
+                  type="text"
+                  value={formData.sku}
+                  onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                  placeholder="e.g. BHR-OIL-100"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/30"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">

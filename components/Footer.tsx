@@ -18,7 +18,7 @@ export function Footer() {
               Rooted in ancient Ayurvedic wisdom. Sourced from the purest botanical ingredients across India. Designed for the modern ritual.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-accent hover:text-brand-dark transition-colors">
+              <a href="https://www.instagram.com/kesurved_herbal_product/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-accent hover:text-brand-dark transition-colors">
                 <Instagram size={18} />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-accent hover:text-brand-dark transition-colors">

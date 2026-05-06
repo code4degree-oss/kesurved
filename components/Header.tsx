@@ -13,6 +13,14 @@ export function Header() {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+
+  useEffect(() => {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error('Error fetching categories:', err));
+  }, []);
   
   const backgroundColor = useTransform(
     scrollY,
@@ -65,8 +73,11 @@ export function Header() {
 
           {/* Desktop Navigation (Center) */}
           <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-[15px] text-black">
-            <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Hair Care</a>
-            <a href="#shop" className="hover:text-brand-accent transition-colors px-2 py-1">Skin Care</a>
+            {categories.map((cat) => (
+              <Link key={cat.id} href={`/category/${cat.id}`} className="hover:text-brand-accent transition-colors px-2 py-1">
+                {cat.name}
+              </Link>
+            ))}
             <a href="#about" className="hover:text-brand-accent transition-colors px-2 py-1">Our Story</a>
             <a href="#contact" className="hover:text-brand-accent transition-colors px-2 py-1">Contact</a>
           </nav>
@@ -177,20 +188,16 @@ export function Header() {
               </div>
               
               <nav className="flex flex-col gap-6 p-8 text-2xl font-serif text-black">
-                <a 
-                  href="#shop" 
-                  className="pb-4 border-b border-brand-blue/10"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Hair Care
-                </a>
-                <a 
-                  href="#shop" 
-                  className="pb-4 border-b border-brand-blue/10"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Skin Care
-                </a>
+                {categories.map((cat) => (
+                  <Link 
+                    key={cat.id}
+                    href={`/category/${cat.id}`} 
+                    className="pb-4 border-b border-brand-blue/10"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
                 <a 
                   href="#about" 
                   className="pb-4 border-b border-brand-blue/10"

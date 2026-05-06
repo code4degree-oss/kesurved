@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
 
     const formattedOrders = orders.map((o) => ({
       id: o.id,
+      orderNumber: o.orderNumber || o.id,
       customer: o.customer.name,
       phone: o.customer.phone,
       items: o.items.reduce((acc, item) => acc + item.quantity, 0),
